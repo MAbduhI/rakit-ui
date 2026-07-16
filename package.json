@@ -1,0 +1,27 @@
+{
+  "name": "rakitmimpi",
+  "private": true,
+  "packageManager": "pnpm@11.11.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "storybook": "turbo run storybook",
+    "build-storybook": "turbo run build-storybook",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "check:full": "biome check --config-path biome.full.jsonc .",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.15",
+    "lefthook": "^1.11.0",
+    "prettier": "^3.5.0",
+    "turbo": "^2.5.0"
+  }
+}

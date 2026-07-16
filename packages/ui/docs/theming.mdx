@@ -1,0 +1,35 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Docs/Theming" />
+
+# Theming
+
+RakitMimpi UI has no runtime theme system — every color is a Tailwind v4 `@theme` token defined in `src/styles.css`. Override tokens in your own CSS, after importing the library's stylesheet:
+
+```css
+@import "tailwindcss";
+@import "@rakitmimpi/ui/styles.css";
+@source "../node_modules/@rakitmimpi/ui/dist";
+
+@theme {
+  --color-primary: oklch(0.65 0.2 145); /* make primary green */
+  --color-ring: oklch(0.65 0.2 145);
+}
+```
+
+## Available tokens
+
+| Token | Used for |
+| --- | --- |
+| `--color-background` / `--color-foreground` | page/card background and default text |
+| `--color-primary` / `--color-primary-foreground` | primary buttons, badges |
+| `--color-secondary` / `--color-secondary-foreground` | secondary buttons, badges |
+| `--color-muted` / `--color-muted-foreground` | muted/secondary text |
+| `--color-accent` / `--color-accent-foreground` | hover states on ghost/outline elements |
+| `--color-destructive` / `--color-destructive-foreground` | destructive actions |
+| `--color-border` | borders (cards, outline buttons) |
+| `--color-input` | input borders |
+| `--color-ring` | focus rings |
+| `--radius-md` | default corner radius |
+
+Tokens are plain Tailwind theme variables, so any Tailwind utility that reads them (`bg-primary`, `text-muted-foreground`, `ring-ring`, …) picks up your overrides automatically — no component code changes needed.

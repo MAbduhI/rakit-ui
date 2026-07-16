@@ -1,0 +1,119 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "development"
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "packages/ui/**",
+      "!**/*.css",
+      "!**/*.md",
+      "!**/*.html",
+      "!**/*.test.ts",
+      "!**/*.test.tsx",
+      "!**/*.spec.ts",
+      "!!**/node_modules",
+      "!!**/dist",
+      "!!**/.turbo",
+      "!!**/build",
+      "!!**/.next",
+      "!!**/storybook-static"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "auto",
+    "lineWidth": 120,
+    "attributePosition": "auto",
+    "bracketSameLine": false,
+    "bracketSpacing": true
+  },
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "react": "all"
+    },
+    "rules": {
+      "recommended": true,
+      // recommended includes lint/style/useComponentExportOnlyModules. Please do not remove it.
+      // lint/style/useComponentExportOnlyModules will ensure that components are only imported from their module entrypoints.
+      // This is useful for tree-shaking, reducing bundle sizes and helps easier testing. Also helps with HMR in development.
+      // Let's do our best to reduce violations over time instead of disabling this rule.
+      "correctness": {
+        "useUniqueElementIds": "off",
+        "noUnusedImports": "error"
+      },
+      "suspicious": {
+        "noConsole": "error",
+        "noEmptyInterface": "off"
+      },
+      "nursery": {
+        "useSortedClasses": "warn"
+      },
+      "style": {
+        "useConsistentCurlyBraces": "error",
+        "useConsistentArrayType": {
+          "level": "error",
+          "options": {
+            "syntax": "generic"
+          }
+        },
+        "useFilenamingConvention": {
+          "level": "error",
+          "options": {
+            "filenameCases": ["kebab-case"]
+          }
+        },
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": {
+            "style": "interface"
+          }
+        }
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "attributePosition": "auto"
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "recommended": true
+      }
+    }
+  },
+  // Add per-app/package overrides here as the monorepo grows (e.g. relaxing
+  // useFilenamingConvention for a package with different conventions, or
+  // banning relative parent imports in favor of a @/ alias).
+  "overrides": [
+    {
+      "includes": ["**/*.json", "**/*.jsonc"],
+      "assist": { "enabled": false }
+    },
+    {
+      // Storybook CSF files export meta objects and story objects, not components.
+      "includes": ["**/*.stories.tsx", "**/.storybook/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useComponentExportOnlyModules": "off"
+          }
+        }
+      }
+    }
+  ]
+}

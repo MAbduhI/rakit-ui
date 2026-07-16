@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# builds
+dist/
+build/
+storybook-static/
+
+# test
+coverage/
+
+# turbo
+.turbo/
+
+# env
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+
+# editor/os
+.DS_Store
+.idea/
