@@ -10,10 +10,12 @@ React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspac
 - `src/styles.css` — Tailwind v4 `@theme` design tokens.
 - `docs/*.mdx` — standalone Storybook doc pages (Introduction, Theming) not tied to a component; registered via the `../docs/**/*.mdx` entry in `.storybook/main.ts`'s `stories` glob.
 - Storybook config is inside the package at `packages/ui/.storybook/` (react-vite framework, Tailwind wired via `@tailwindcss/vite` in `viteFinal`).
+- `apps/playground` — private Vite + React app for hacking on components in a real browser (`pnpm dev` → port 5173). `src/scratch.tsx` is a disposable scratch space; `src/showcase.tsx` renders every component × variant; `src/app.tsx` is the shell plus a `Section` helper. It aliases `@rakit-ui/ui` to the library **source** (`resolve.alias` in `vite.config.ts` + a matching `paths` entry in `tsconfig.json` — keep both in sync), and `src/styles.css` adds `@source "../../../packages/ui/src"` so Tailwind scans the library's classes. Not published.
 - `.claude/settings.json` at repo root — project-local Claude Code permission allowlist for common pnpm/git commands.
 
 ## Commands (run from repo root)
 
+- `pnpm dev` — turbo `dev`: runs the playground on port 5173 and tsup's watch build of the library. `pnpm playground` runs only the playground.
 - `pnpm build` — turbo build of all packages (ui builds with tsup: ESM + CJS + d.ts, then copies `styles.css` to `dist/`)
 - `pnpm storybook` — Storybook dev server on port 6006
 - `pnpm test` — turbo run of the Vitest suite (single run); `pnpm --filter @rakit-ui/ui test:watch` for watch mode
@@ -34,7 +36,7 @@ React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspac
 - Variants via `class-variance-authority` (cva); class merging via the `cn()` helper (`clsx` + `tailwind-merge`).
 - Components accept and forward native HTML props; `className` is always merged last so consumers can override styles.
 - Colors reference theme tokens (`bg-primary`, `text-muted-foreground`, …) defined in `src/styles.css` — never hardcode palette colors, add tokens instead.
-- New component checklist: pick a tier, create `src/components/<Tier>/<name>/<name>.tsx` + `<name>.stories.tsx` + `<name>.test.tsx` + `index.ts` barrel, set the story `title` to `Components/<Tier>/<Name>`, then export from `src/index.ts`.
+- New component checklist: pick a tier, create `src/components/<Tier>/<name>/<name>.tsx` + `<name>.stories.tsx` + `<name>.test.tsx` + `index.ts` barrel, set the story `title` to `Components/<Tier>/<Name>`, export from `src/index.ts`, then add a `<Section>` for it in `apps/playground/src/showcase.tsx`.
 
 ## Storybook grouping
 

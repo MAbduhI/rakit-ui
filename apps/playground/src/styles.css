@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/*
+ * The library's design tokens. Imported straight from source rather than
+ * `@rakit-ui/ui/styles.css` so token edits show up without a rebuild.
+ */
+@import "../../../packages/ui/src/styles.css";
+
+/*
+ * Tailwind only scans this app's files by default. Point it at the library
+ * source too, otherwise the utility classes used inside components
+ * (`bg-primary`, `rounded-md`, …) never get generated.
+ */
+@source "../../../packages/ui/src";

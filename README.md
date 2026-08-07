@@ -8,6 +8,15 @@ Monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces) and [Turbore
 
 ```
 .
+├── apps/
+│   └── playground/                # local Vite app for hacking on components
+│       ├── index.html
+│       └── src/
+│           ├── main.tsx
+│           ├── app.tsx            # shell + Section helper
+│           ├── scratch.tsx        # your scratch space — rewrite at will
+│           ├── showcase.tsx       # every component × every variant
+│           └── styles.css
 ├── packages/
 │   └── ui/                        # @rakit-ui/ui — the component library
 │       ├── docs/                  # Storybook MDX pages (Introduction, Theming)
@@ -36,8 +45,9 @@ Requires Node.js >= 20 and pnpm.
 
 ```bash
 pnpm install          # install deps + set up git hooks (lefthook)
+pnpm dev              # run the playground at http://localhost:5173 (+ watch-build the library)
+pnpm playground       # run only the playground, skipping the library watch build
 pnpm build            # build all packages via turbo
-pnpm dev              # watch-build all packages via turbo
 pnpm storybook        # run Storybook at http://localhost:6006
 pnpm test             # run the Vitest suite once
 pnpm --filter @rakit-ui/ui test:watch   # Vitest in watch mode
@@ -47,6 +57,39 @@ pnpm typecheck        # TypeScript type checking
 ```
 
 Tests are colocated with the code they cover (`button.test.tsx` next to `button.tsx`) and run in `jsdom` with [Testing Library](https://testing-library.com). Add a new test by dropping a `*.test.ts(x)` file anywhere under `packages/ui/src` — Vitest picks it up automatically.
+
+## Playground
+
+`apps/playground` is a plain Vite + React app for building components in a real browser, as opposed to Storybook's isolated frames.
+
+```bash
+pnpm dev          # http://localhost:5173
+```
+
+Edit anything under `packages/ui/src` and the page hot-reloads immediately — the playground aliases `@rakit-ui/ui` to the library **source** rather than `dist`, so there is no build step in the loop.
+
+Three files matter:
+
+| File           | What it's for                                                                             |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| `scratch.tsx`  | Your workspace. Rewrite it however you like — nothing else imports it, so it can't break. |
+| `showcase.tsx` | Every component with all variants and states. Add a `<Section>` when you add a component. |
+| `app.tsx`      | Page shell and the `Section` helper. Rarely needs touching.                               |
+
+### Playground vs. Storybook
+
+Both stay useful. Storybook is the documentation surface — autodocs, arg controls, and the published component catalog. The playground is the scratchpad: real page context, several components composed together, your own state and event handlers, no CSF boilerplate to write first.
+
+### How the aliasing works
+
+Two files have to agree, and both are commented:
+
+- [vite.config.ts](apps/playground/vite.config.ts) — `resolve.alias` maps `@rakit-ui/ui` → `packages/ui/src/index.ts` for the bundler.
+- [tsconfig.json](apps/playground/tsconfig.json) — the matching `paths` entry so `tsc` resolves it the same way.
+
+[src/styles.css](apps/playground/src/styles.css) imports the tokens from source and adds `@source "../../../packages/ui/src"` so Tailwind scans the library's files. Without that `@source` line the app renders unstyled components — Tailwind would never see classes like `bg-primary`, because they live outside this app's own directory.
+
+The playground is `private: true` and never published. `@rakit-ui/ui` is still declared as a `workspace:*` dependency so Turborepo knows the build order.
 
 ## Component organization & Storybook grouping
 
@@ -109,6 +152,7 @@ Tier order in the sidebar is pinned in [.storybook/preview.ts](packages/ui/.stor
 2. Add `<name>.tsx`, `<name>.stories.tsx`, `<name>.test.tsx`, and an `index.ts` barrel.
 3. Set the story `title` to `Components/<Tier>/<Name>`.
 4. Export the public pieces from `src/index.ts`.
+5. Add a `<Section>` for it in [apps/playground/src/showcase.tsx](apps/playground/src/showcase.tsx).
 
 Import components through their folder barrel (`./components/Atom/button`), never the `.tsx` file directly. Cross-tier imports go through the barrel too — a molecule pulls in `../../Atom/button`.
 
