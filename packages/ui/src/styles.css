@@ -1,11 +1,11 @@
 /*
- * RakitMimpi UI design tokens (Tailwind CSS v4).
+ * Rakit UI design tokens (Tailwind CSS v4).
  *
  * Consumers import this file alongside Tailwind:
  *
  *   @import "tailwindcss";
- *   @import "@rakitmimpi/ui/styles.css";
- *   @source "../node_modules/@rakitmimpi/ui/dist";
+ *   @import "@rakit-ui/ui/styles.css";
+ *   @source "../node_modules/@rakit-ui/ui/dist";
  */
 @theme {
   --color-background: oklch(1 0 0);

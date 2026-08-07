@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Input } from "./input";
 
 const meta = {
-  title: "Components/Input",
+  title: "Components/Atom/Input",
   component: Input,
   tags: ["autodocs"],
   args: {
@@ -23,7 +23,7 @@ export const Disabled: Story = {
 
 export const WithValue: Story = {
   args: {
-    defaultValue: "hello@rakitmimpi.dev",
+    defaultValue: "hello@rakit-ui.dev",
     type: "email",
   },
 };

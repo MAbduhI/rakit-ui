@@ -1,7 +1,7 @@
 {
-  "name": "@rakitmimpi/ui",
+  "name": "@rakit-ui/ui",
   "version": "0.1.0",
-  "description": "RakitMimpi UI — React component library built on Tailwind CSS",
+  "description": "Rakit UI — React component library built on Tailwind CSS",
   "license": "MIT",
   "type": "module",
   "sideEffects": [

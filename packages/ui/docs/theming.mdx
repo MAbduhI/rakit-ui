@@ -4,12 +4,12 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # Theming
 
-RakitMimpi UI has no runtime theme system — every color is a Tailwind v4 `@theme` token defined in `src/styles.css`. Override tokens in your own CSS, after importing the library's stylesheet:
+# Rakit UI has no runtime theme system — every color is a Tailwind v4 `@theme` token defined in `src/styles.css`. Override tokens in your own CSS, after importing the library's stylesheet:
 
 ```css
 @import "tailwindcss";
-@import "@rakitmimpi/ui/styles.css";
-@source "../node_modules/@rakitmimpi/ui/dist";
+@import "@rakit-ui/ui/styles.css";
+@source "../node_modules/@rakit-ui/ui/dist";
 
 @theme {
   --color-primary: oklch(0.65 0.2 145); /* make primary green */

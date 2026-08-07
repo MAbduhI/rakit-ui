@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { cn } from "../../utils/cn";
+import { cn } from "../../../utils/cn";
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {}
 

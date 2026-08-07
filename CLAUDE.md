@@ -1,10 +1,10 @@
-# RakitMimpi UI monorepo
+# Rakit UI monorepo
 
-React component library (`@rakitmimpi/ui`) built on Tailwind CSS v4. pnpm workspace + Turborepo.
+React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspace + Turborepo.
 
 ## Layout
 
-- `packages/ui` — the library. Each component lives in its own folder under `src/components/<name>/` (kebab-case folder + filenames): `<name>.tsx`, a colocated `<name>.stories.tsx`, a colocated `<name>.test.tsx`, and an `index.ts` barrel re-exporting the public pieces. Never import a component's `.tsx` file directly from outside its folder — import the folder (`./components/button`), which resolves to `index.ts`.
+- `packages/ui` — the library. Components are grouped by atomic-design tier: `src/components/<Tier>/<name>/`, where `<Tier>` is PascalCase singular (`Atom`, `Molecule`, `Organism`, `Template`, `Page`) — the only exception to the kebab-case rule. Inside a tier, each component has its own kebab-case folder holding `<name>.tsx`, a colocated `<name>.stories.tsx`, a colocated `<name>.test.tsx`, and an `index.ts` barrel re-exporting the public pieces. Never import a component's `.tsx` file directly from outside its folder — import the folder (`./components/Atom/button`), which resolves to `index.ts`.
 - `src/utils/` — shared helpers (currently just `cn`), same folder pattern: implementation + `*.test.ts` + barrel `index.ts`.
 - `src/index.ts` — the package's public API; every new export must be added here.
 - `src/styles.css` — Tailwind v4 `@theme` design tokens.
@@ -16,10 +16,10 @@ React component library (`@rakitmimpi/ui`) built on Tailwind CSS v4. pnpm worksp
 
 - `pnpm build` — turbo build of all packages (ui builds with tsup: ESM + CJS + d.ts, then copies `styles.css` to `dist/`)
 - `pnpm storybook` — Storybook dev server on port 6006
-- `pnpm test` — turbo run of the Vitest suite (single run); `pnpm --filter @rakitmimpi/ui test:watch` for watch mode
+- `pnpm test` — turbo run of the Vitest suite (single run); `pnpm --filter @rakit-ui/ui test:watch` for watch mode
 - `pnpm check` / `pnpm check:fix` — Biome lint + format (`check:full` runs the stricter `biome.full.jsonc`)
 - `pnpm typecheck` — `tsc --noEmit` per package
-- Single package: `pnpm --filter @rakitmimpi/ui <script>`
+- Single package: `pnpm --filter @rakit-ui/ui <script>`
 
 ## Conventions (enforced by Biome — see biome.jsonc)
 
@@ -34,7 +34,13 @@ React component library (`@rakitmimpi/ui`) built on Tailwind CSS v4. pnpm worksp
 - Variants via `class-variance-authority` (cva); class merging via the `cn()` helper (`clsx` + `tailwind-merge`).
 - Components accept and forward native HTML props; `className` is always merged last so consumers can override styles.
 - Colors reference theme tokens (`bg-primary`, `text-muted-foreground`, …) defined in `src/styles.css` — never hardcode palette colors, add tokens instead.
-- New component checklist: create `src/components/<name>/<name>.tsx` + `<name>.stories.tsx` + `<name>.test.tsx` + `index.ts` barrel, then export from `src/index.ts`.
+- New component checklist: pick a tier, create `src/components/<Tier>/<name>/<name>.tsx` + `<name>.stories.tsx` + `<name>.test.tsx` + `index.ts` barrel, set the story `title` to `Components/<Tier>/<Name>`, then export from `src/index.ts`.
+
+## Storybook grouping
+
+- The sidebar tree is built from each story's `meta.title` string, **not** from the folder path — the `stories` glob in `.storybook/main.ts` only decides which files load. Moving a component to a different folder does nothing until its `title` is updated.
+- Convention: `title` mirrors the path under `src/components/`, e.g. `src/components/Atom/button/` → `title: "Components/Atom/Button"`. Standalone MDX pages use `<Meta title="Docs/…" />`.
+- Tier order is pinned in `.storybook/preview.ts` under `parameters.options.storySort.order`; add new tiers there or they sort alphabetically.
 
 ## Testing
 
@@ -47,4 +53,4 @@ React component library (`@rakitmimpi/ui`) built on Tailwind CSS v4. pnpm worksp
 - Git hooks: Lefthook (`lefthook.yml`) runs Biome on staged JS/TS and Prettier on md/css at pre-commit. Installed by the root `prepare` script.
 - Default git branch is `development` (Biome's VCS integration expects this).
 - `react`/`react-dom` are peer dependencies of the ui package — keep them out of `dependencies`.
-- Consumers must add `@source "../node_modules/@rakitmimpi/ui/dist"` to their Tailwind CSS entry; the package ships uncompiled utility classes.
+- Consumers must add `@source "../node_modules/@rakit-ui/ui/dist"` to their Tailwind CSS entry; the package ships uncompiled utility classes.

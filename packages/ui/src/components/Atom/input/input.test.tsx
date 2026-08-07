@@ -12,8 +12,8 @@ describe("Input", () => {
   it("accepts typed input", async () => {
     render(<Input placeholder="Email" />);
     const input = screen.getByPlaceholderText("Email");
-    await userEvent.type(input, "hello@rakitmimpi.dev");
-    expect(input).toHaveValue("hello@rakitmimpi.dev");
+    await userEvent.type(input, "hello@rakit-ui.dev");
+    expect(input).toHaveValue("hello@rakit-ui.dev");
   });
 
   it("is disabled when the disabled prop is set", () => {

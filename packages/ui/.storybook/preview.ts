@@ -9,6 +9,13 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    options: {
+      // The sidebar sorts alphabetically by default, which would put Page before
+      // Template. Pin the atomic-design tiers to their real order instead.
+      storySort: {
+        order: ["Docs", "Components", ["Atom", "Molecule", "Organism", "Template", "Page"]],
+      },
+    },
   },
 };
 

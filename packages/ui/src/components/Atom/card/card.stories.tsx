@@ -3,7 +3,7 @@ import { Button } from "../button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";
 
 const meta = {
-  title: "Components/Card",
+  title: "Components/Atom/Card",
   component: Card,
   tags: ["autodocs"],
 } satisfies Meta<typeof Card>;
