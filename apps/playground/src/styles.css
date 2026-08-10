@@ -9,6 +9,6 @@
 /*
  * Tailwind only scans this app's files by default. Point it at the library
  * source too, otherwise the utility classes used inside components
- * (`bg-primary`, `rounded-md`, …) never get generated.
+ * (`bg-accent`, `rounded-md`, …) never get generated.
  */
 @source "../../../packages/ui/src";

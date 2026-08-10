@@ -4,6 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rakit UI Playground</title>
+    <!--
+      Mirror of `themeScript` from @rakit-ui/ui. Blocking and before paint, so a
+      dark-themed reload never flashes light. Apps get this by inlining the
+      exported `themeScript` string instead of hand-copying it.
+    -->
+    <script>
+      (function () {
+        try {
+          var s = localStorage.getItem("rakit-ui-theme");
+          var t =
+            s === "light" || s === "dark"
+              ? s
+              : window.matchMedia &&
+                  window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

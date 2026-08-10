@@ -1,10 +1,311 @@
 import { Meta } from "@storybook/addon-docs/blocks";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, useTheme } from "../src";
 
 <Meta title="Docs/Theming" />
 
+export const ThemeDemo = () => {
+  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
+
+  // `sb-unstyled` opts this subtree out of Storybook's docs typography. Without
+  // it, Storybook colors the h3/p directly from the (light) docs theme, and a
+  // direct rule beats the color Card passes down by inheritance — so the title
+  // goes near-black on a dark card.
+  return (
+    <Card className="sb-unstyled max-w-xl">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          Live theme
+          <Badge variant={resolvedTheme === "dark" ? "accent" : "secondary"}>{resolvedTheme}</Badge>
+        </CardTitle>
+        <CardDescription>
+          preference: <code>{theme}</code> — this is the real hook writing <code>data-theme</code> on{" "}
+          <code>&lt;html&gt;</code>, so the whole page below moves with it.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button size="sm" onClick={toggleTheme}>
+            Toggle
+          </Button>
+          <Button size="sm" variant="outline" disabled={theme === "light"} onClick={() => setTheme("light")}>
+            Light
+          </Button>
+          <Button size="sm" variant="outline" disabled={theme === "dark"} onClick={() => setTheme("dark")}>
+            Dark
+          </Button>
+          <Button size="sm" variant="ghost" disabled={theme === "system"} onClick={() => setTheme("system")}>
+            System
+          </Button>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="success">Paid</Badge>
+          <Badge variant="warning">Pending</Badge>
+          <Badge variant="error">Overdue</Badge>
+          <Badge variant="outline">Draft</Badge>
+        </div>
+        <Input placeholder="Focus me to see the ring in this theme" />
+      </CardContent>
+    </Card>
+  );
+};
+
+export const Swatch = ({ token, light, dark, usage }) => (
+  <tr>
+    <td>
+      <code>{`--color-${token}`}</code>
+    </td>
+    <td>
+      <span className="inline-flex items-center gap-2">
+        <span
+          className="inline-block h-5 w-5 rounded border border-border align-middle"
+          style={{ backgroundColor: light }}
+        />
+        <code>{light}</code>
+      </span>
+    </td>
+    <td>
+      <span className="inline-flex items-center gap-2">
+        <span
+          className="inline-block h-5 w-5 rounded border border-border align-middle"
+          style={{ backgroundColor: dark }}
+        />
+        <code>{dark}</code>
+      </span>
+    </td>
+    <td>{usage}</td>
+  </tr>
+);
+
 # Theming
 
-# Rakit UI has no runtime theme system — every color is a Tailwind v4 `@theme` token defined in `src/styles.css`. Override tokens in your own CSS, after importing the library's stylesheet:
+Rakit UI ships two themes. Every color is a Tailwind v4 theme variable defined in
+`src/styles.css`; dark mode redefines the same variables, so components carry no
+`dark:` classes — utilities like `bg-surface` and `text-secondary` just
+resolve differently.
+
+## Try it
+
+<ThemeDemo />
+
+Two ways to drive this:
+
+- the **Theme** control in the toolbar above — switches any story canvas
+- the buttons in the card — the real `useTheme()` hook, exactly as an app uses it
+
+## Turning dark mode on
+
+Dark applies when either is true:
+
+- `<html data-theme="dark">` — an explicit choice
+- the OS prefers dark **and** no `data-theme="light"` is set
+
+`data-theme` is the only contract. Set it however you like, or use the hook.
+
+```tsx
+import { useTheme } from "@rakit-ui/ui";
+
+function ThemeToggle() {
+  const { resolvedTheme, toggleTheme } = useTheme();
+
+  return (
+    <Button variant="outline" onClick={toggleTheme}>
+      {resolvedTheme === "dark" ? "Light mode" : "Dark mode"}
+    </Button>
+  );
+}
+```
+
+`useTheme()` needs no provider — it reads a module-level store, so every caller
+stays in sync. It returns:
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `theme` | `"light" \| "dark" \| "system"` | what the user picked |
+| `resolvedTheme` | `"light" \| "dark"` | what is on screen |
+| `setTheme(theme)` | | persists to `localStorage` under `rakit-ui-theme` |
+| `toggleTheme()` | | flips light ↔ dark as an explicit choice |
+
+The default is `"system"`, which follows `prefers-color-scheme` and keeps
+following it until the user chooses. `setTheme("system")` clears the stored
+choice and hands control back to the OS.
+
+### Avoiding a flash of the wrong theme
+
+React applies the theme after hydration, which is one paint too late. Drop the
+exported `themeScript` into `<head>` as a blocking script:
+
+```tsx
+import { themeScript } from "@rakit-ui/ui";
+
+// biome-ignore lint/security/noDangerouslySetInnerHtml: must run before paint
+<script dangerouslySetInnerHTML={{ __html: themeScript }} />;
+```
+
+Lower-level pieces are exported too, for apps that manage theme themselves:
+`applyTheme`, `initTheme`, `resolveTheme`, `getSystemTheme`, `getStoredTheme`,
+`setStoredTheme`, `getAppliedTheme`, `subscribeToSystemTheme`,
+`THEME_STORAGE_KEY`, `THEME_ATTRIBUTE`.
+
+## Tokens
+
+Utility names follow the token name: `--color-surface-alt` → `bg-surface-alt`,
+`--color-secondary` → `text-secondary`, and so on.
+
+### Surfaces and lines
+
+<table>
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Light</th>
+      <th>Dark</th>
+      <th>Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <Swatch token="bg" light="#F7F7F5" dark="#0D1117" usage="Page background" />
+    <Swatch token="surface" light="#FFFFFF" dark="#151B26" usage="Cards, panels, modals" />
+    <Swatch token="surface-alt" light="#EFF1F3" dark="#1A2130" usage="Table zebra-striping, subtle sections" />
+    <Swatch token="surface-hover" light="#E3E5E8" dark="#242C3B" usage="Hover fill on ghost/outline/secondary" />
+    <Swatch token="border" light="#E3E5E8" dark="#242C3B" usage="Dividers, card borders" />
+    <Swatch token="input" light="#828995" dark="#626D80" usage="Form-control borders" />
+    <Swatch token="ring" light="#2E3A6E" dark="#6B7BC4" usage="Focus indicator" />
+  </tbody>
+</table>
+
+### Brand
+
+<table>
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Light</th>
+      <th>Dark</th>
+      <th>Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <Swatch token="accent" light="#2E3A6E" dark="#2E3A6E" usage="Primary buttons, links, active nav" />
+    <Swatch token="accent-foreground" light="#F7F7F5" dark="#F7F7F5" usage="Text on an accent fill" />
+    <Swatch token="accent-secondary" light="#8A6D3B" dark="#B08D57" usage="Highlights, active tab underline" />
+    <Swatch token="accent-secondary-foreground" light="#F7F7F5" dark="#0D1117" usage="Text on an accent-secondary fill" />
+  </tbody>
+</table>
+
+The accent navy is deliberately identical in both themes — brand consistency.
+Only the secondary accent shifts (muted brass in light, muted gold in dark) to
+stay legible against each background.
+
+### Text
+
+<table>
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Light</th>
+      <th>Dark</th>
+      <th>Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <Swatch token="primary" light="#1A1D23" dark="#EDEDEF" usage="Main text" />
+    <Swatch token="secondary" light="#5B6270" dark="#9AA1AC" usage="Muted/secondary text" />
+  </tbody>
+</table>
+
+Neither theme uses pure black or pure white for text — near-black and soft-white
+read as less harsh.
+
+These two are named `primary`/`secondary` rather than `text-primary`/`text-secondary`
+so the utilities read `text-primary` and `text-secondary`. Worth knowing: that
+makes `bg-primary` a near-black fill, **not** the brand navy — the brand is
+`bg-accent`.
+
+### Status
+
+<table>
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Light</th>
+      <th>Dark</th>
+      <th>Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <Swatch token="success" light="#2E7D5B" dark="#4C8B6B" usage="Success states, positive status" />
+    <Swatch token="success-foreground" light="#F7F7F5" dark="#0D1117" usage="Text on a success fill" />
+    <Swatch token="warning" light="#B8842A" dark="#C9A24E" usage="Warning states" />
+    <Swatch token="warning-foreground" light="#1A1D23" dark="#0D1117" usage="Text on a warning fill" />
+    <Swatch token="error" light="#B0413A" dark="#B0554A" usage="Error states, destructive actions" />
+    <Swatch token="error-foreground" light="#F7F7F5" dark="#F7F7F5" usage="Text on an error fill" />
+  </tbody>
+</table>
+
+Status colors are the only greens, ambers, and reds in the system. Reach for
+`bg-success` / `bg-warning` / `bg-error` — never a Tailwind palette color like
+`bg-green-600`, which will not flip with the theme.
+
+## Contrast
+
+Measured WCAG 2.1 ratios for the pairings components actually use. Body text
+needs 4.5:1; non-text UI boundaries need 3:1.
+
+| Pairing | Light | Dark |
+| --- | --- | --- |
+| `primary` on `surface` | 16.88:1 | 14.76:1 |
+| `secondary` on `surface` | 6.13:1 | 6.63:1 |
+| `secondary` on `surface-alt` | 5.41:1 | 6.19:1 |
+| `accent-foreground` on `accent` | 10.06:1 | 10.06:1 |
+| `success-foreground` on `success` | 4.66:1 | 4.70:1 |
+| `warning-foreground` on `warning` | 5.12:1 | 7.90:1 |
+| `error-foreground` on `error` | 5.34:1 | 4.61:1 |
+| `input` border on `surface` | 3.52:1 | 3.30:1 |
+| `ring` on `bg` | 10.06:1 | 4.74:1 |
+
+Two notes on why extra tokens exist:
+
+- **`--color-input` is darker than `--color-border`.** The spec border
+  (`#E3E5E8` / `#242C3B`) sits at ~1.2:1 against a surface. That is fine for a
+  decorative divider but fails WCAG 1.4.11 as the visual boundary of a text
+  field, so form controls get their own stronger value.
+- **`--color-ring` is not the accent in dark.** `#2E3A6E` is 1.75:1 against the
+  dark page — an invisible focus indicator. The dark ring keeps the hue and
+  lifts the lightness until it clears 3:1 everywhere.
+
+Note that `accent` used as *text* on a dark surface is 1.60:1 and must not be
+used that way — on dark, link and active-nav text should use `text-ring` or
+`text-accent-secondary`.
+
+## Tables
+
+Zebra-stripe with `surface-alt`, which is one step off the page in both themes:
+
+```tsx
+<table className="w-full border-collapse text-sm">
+  <thead>
+    <tr className="border-border border-b text-left text-secondary">
+      <th className="px-3 py-2 font-medium">Invoice</th>
+      <th className="px-3 py-2 font-medium">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rows.map((row) => (
+      <tr key={row.id} className="odd:bg-surface even:bg-surface-alt">
+        <td className="px-3 py-2">{row.id}</td>
+        <td className="px-3 py-2">
+          <Badge variant={row.status}>{row.status}</Badge>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+```
+
+## Overriding tokens
+
+Tokens are plain Tailwind theme variables, so redefine them after importing the
+stylesheet. Override both themes or you will only fix one:
 
 ```css
 @import "tailwindcss";
@@ -12,24 +313,10 @@ import { Meta } from "@storybook/addon-docs/blocks";
 @source "../node_modules/@rakit-ui/ui/dist";
 
 @theme {
-  --color-primary: oklch(0.65 0.2 145); /* make primary green */
-  --color-ring: oklch(0.65 0.2 145);
+  --color-accent: #1f6f4a; /* light */
+}
+
+:root[data-theme="dark"] {
+  --color-accent: #2e8b5f;
 }
 ```
-
-## Available tokens
-
-| Token | Used for |
-| --- | --- |
-| `--color-background` / `--color-foreground` | page/card background and default text |
-| `--color-primary` / `--color-primary-foreground` | primary buttons, badges |
-| `--color-secondary` / `--color-secondary-foreground` | secondary buttons, badges |
-| `--color-muted` / `--color-muted-foreground` | muted/secondary text |
-| `--color-accent` / `--color-accent-foreground` | hover states on ghost/outline elements |
-| `--color-destructive` / `--color-destructive-foreground` | destructive actions |
-| `--color-border` | borders (cards, outline buttons) |
-| `--color-input` | input borders |
-| `--color-ring` | focus rings |
-| `--radius-md` | default corner radius |
-
-Tokens are plain Tailwind theme variables, so any Tailwind utility that reads them (`bg-primary`, `text-muted-foreground`, `ring-ring`, …) picks up your overrides automatically — no component code changes needed.

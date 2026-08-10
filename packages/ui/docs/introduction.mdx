@@ -30,4 +30,18 @@ export function Example() {
 }
 ```
 
-Browse the **Components** section in the sidebar for every component, its variants, and interactive controls. See the **Theming** page for how to customize design tokens.
+## Light and dark
+
+Both themes ship in `styles.css`. Dark mode turns on when `<html>` carries
+`data-theme="dark"`, or when the OS prefers dark and no explicit choice is
+stored. The `useTheme()` hook handles both:
+
+```tsx
+import { useTheme } from "@rakit-ui/ui";
+
+const { resolvedTheme, toggleTheme } = useTheme();
+```
+
+Use the **Theme** control in the toolbar to preview any story in either theme.
+
+Browse the **Components** section in the sidebar for every component, its variants, and interactive controls. See the **Theming** page for the full token table, contrast measurements, and how to customize tokens.

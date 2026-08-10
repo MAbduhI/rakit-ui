@@ -6,29 +6,151 @@
  *   @import "tailwindcss";
  *   @import "@rakit-ui/ui/styles.css";
  *   @source "../node_modules/@rakit-ui/ui/dist";
+ *
+ * Two themes ship here. Light is the default and lives in `@theme`; dark
+ * overrides the same custom properties, so every Tailwind utility that reads a
+ * token (`bg-surface`, `text-secondary`, `border-border`, …) flips theme
+ * without a single component-level `dark:` class.
+ *
+ * Dark mode turns on when either is true:
+ *   - `<html data-theme="dark">` — an explicit user choice (see `useTheme`)
+ *   - the OS prefers dark AND no explicit `data-theme="light"` is set
+ *
+ * IMPORTANT: the dark palette is written out twice (explicit + system). Keep
+ * the two blocks in sync — CSS has no way to share one declaration block
+ * between a selector and a media query.
  */
+
 @theme {
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.21 0.03 265);
+  /* Surfaces ------------------------------------------------------------- */
+  --color-bg: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-surface-alt: #eff1f3;
+  /* One step further from the page than `surface-alt`; hover fills only. */
+  --color-surface-hover: #e3e5e8;
 
-  --color-primary: oklch(0.55 0.2 265);
-  --color-primary-foreground: oklch(0.98 0.01 265);
+  /* Lines ---------------------------------------------------------------- */
+  --color-border: #e3e5e8;
+  /*
+   * Form-control borders are deliberately darker than `--color-border`.
+   * `--color-border` at 1.2:1 against a surface is fine for a decorative
+   * divider but fails WCAG 1.4.11 (3:1) as the visual boundary of an input.
+   */
+  --color-input: #828995;
+  --color-ring: #2e3a6e;
 
-  --color-secondary: oklch(0.94 0.02 265);
-  --color-secondary-foreground: oklch(0.3 0.05 265);
+  /* Brand ---------------------------------------------------------------- */
+  --color-accent: #2e3a6e;
+  --color-accent-foreground: #f7f7f5;
+  --color-accent-secondary: #8a6d3b;
+  --color-accent-secondary-foreground: #f7f7f5;
 
-  --color-muted: oklch(0.96 0.01 265);
-  --color-muted-foreground: oklch(0.55 0.02 265);
+  /*
+   * Text ------------------------------------------------------------------
+   * Named `primary`/`secondary` (not `text-primary`) so the utilities read
+   * `text-primary` / `text-secondary`. Note the consequence: `bg-primary`
+   * paints near-black, NOT the brand navy — that is `bg-accent`.
+   */
+  --color-primary: #1a1d23;
+  --color-secondary: #5b6270;
 
-  --color-accent: oklch(0.94 0.03 265);
-  --color-accent-foreground: oklch(0.3 0.05 265);
-
-  --color-destructive: oklch(0.58 0.22 27);
-  --color-destructive-foreground: oklch(0.98 0.01 27);
-
-  --color-border: oklch(0.9 0.01 265);
-  --color-input: oklch(0.87 0.01 265);
-  --color-ring: oklch(0.55 0.2 265);
+  /* Status --------------------------------------------------------------- */
+  --color-success: #2e7d5b;
+  --color-success-foreground: #f7f7f5;
+  --color-warning: #b8842a;
+  --color-warning-foreground: #1a1d23;
+  --color-error: #b0413a;
+  --color-error-foreground: #f7f7f5;
 
   --radius-md: 0.5rem;
+}
+
+/*
+ * Makes `dark:` utilities follow the same signal as the tokens. Rarely needed —
+ * reach for a token first — but available for one-off overrides.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Explicit dark — set by `applyTheme()` / the no-flash inline script. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #0d1117;
+  --color-surface: #151b26;
+  --color-surface-alt: #1a2130;
+  --color-surface-hover: #242c3b;
+
+  --color-border: #242c3b;
+  --color-input: #626d80;
+  /*
+   * The accent navy is only 1.75:1 against the dark page — unusable as a focus
+   * indicator. Same hue, lifted until it clears 3:1 on every dark surface.
+   */
+  --color-ring: #6b7bc4;
+
+  /* Accent keeps its light-theme hex on purpose — brand consistency. */
+  --color-accent: #2e3a6e;
+  --color-accent-foreground: #f7f7f5;
+  --color-accent-secondary: #b08d57;
+  --color-accent-secondary-foreground: #0d1117;
+
+  --color-primary: #ededef;
+  --color-secondary: #9aa1ac;
+
+  --color-success: #4c8b6b;
+  --color-success-foreground: #0d1117;
+  --color-warning: #c9a24e;
+  --color-warning-foreground: #0d1117;
+  --color-error: #b0554a;
+  --color-error-foreground: #f7f7f5;
+}
+
+/* System dark, with no explicit choice on record. Mirror of the block above. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --color-bg: #0d1117;
+    --color-surface: #151b26;
+    --color-surface-alt: #1a2130;
+    --color-surface-hover: #242c3b;
+
+    --color-border: #242c3b;
+    --color-input: #626d80;
+    --color-ring: #6b7bc4;
+
+    --color-accent: #2e3a6e;
+    --color-accent-foreground: #f7f7f5;
+    --color-accent-secondary: #b08d57;
+    --color-accent-secondary-foreground: #0d1117;
+
+    --color-primary: #ededef;
+    --color-secondary: #9aa1ac;
+
+    --color-success: #4c8b6b;
+    --color-success-foreground: #0d1117;
+    --color-warning: #c9a24e;
+    --color-warning-foreground: #0d1117;
+    --color-error: #b0554a;
+    --color-error-foreground: #f7f7f5;
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+/*
+ * Page defaults. In `@layer base` so anything a consumer writes outside a
+ * layer wins without needing `!important`.
+ */
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-primary);
+  }
 }

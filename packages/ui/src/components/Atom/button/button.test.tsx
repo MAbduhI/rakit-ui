@@ -28,6 +28,11 @@ describe("Button", () => {
 
   it("merges a custom className with the variant classes", () => {
     render(<Button className="custom-class">Click me</Button>);
-    expect(screen.getByRole("button")).toHaveClass("custom-class", "bg-primary");
+    expect(screen.getByRole("button")).toHaveClass("custom-class", "bg-accent");
+  });
+
+  it("uses the error token for the destructive variant", () => {
+    render(<Button variant="destructive">Delete</Button>);
+    expect(screen.getByRole("button")).toHaveClass("bg-error", "text-error-foreground");
   });
 });

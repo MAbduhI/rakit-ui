@@ -1,2 +1,18 @@
 @import "tailwindcss";
 @import "../src/styles.css";
+
+/*
+ * Storybook paints the canvas and every docs story block from its own theme
+ * object, which would pin them to the light shell and make the toolbar's Theme
+ * control look broken. Hand those surfaces back to the design tokens so a story
+ * always sits on the page background of the theme being previewed.
+ *
+ * The selectors out-specify Storybook's single-class emotion styles on purpose;
+ * `.sbdocs-wrapper` is deliberately left alone — that is the docs *chrome*, and
+ * it stays light.
+ */
+body.sb-show-main,
+#storybook-root,
+.sbdocs-preview .docs-story {
+  background-color: var(--color-bg);
+}
