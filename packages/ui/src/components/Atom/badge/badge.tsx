@@ -13,12 +13,17 @@ const badgeVariants = cva(
     variants: {
       variant: {
         primary: "border-transparent bg-accent text-accent-foreground",
+        "primary-highlight": "border-accent text-accent bg-white",
         secondary: "border-transparent bg-surface-alt text-primary",
         outline: "border-border text-primary",
         accent: "border-transparent bg-accent-secondary text-accent-secondary-foreground",
+        "accent-highlight": "bg-white border-accent-secondary text-accent-secondary",
         success: "border-transparent bg-success text-success-foreground",
+        "success-highlight": "bg-white border-success text-success",
         warning: "border-transparent bg-warning text-warning-foreground",
+        "warning-highlight": "bg-white border-warning text-warning",
         error: "border-transparent bg-error text-error-foreground",
+        "error-highlight": "bg-white border-error text-error",
       },
     },
     defaultVariants: {

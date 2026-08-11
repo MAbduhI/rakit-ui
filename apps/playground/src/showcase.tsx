@@ -19,9 +19,11 @@ import {
   iconNames,
   Loading,
   type LoadingProps,
+  Pagination,
   Skeleton,
 } from "@rakit-ui/ui";
 import { Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
+import { useState } from "react";
 import { Section } from "./app";
 
 const buttonVariants: Array<NonNullable<ButtonProps["variant"]>> = [
@@ -42,6 +44,15 @@ const badgeVariants: Array<NonNullable<BadgeProps["variant"]>> = [
   "success",
   "warning",
   "error",
+];
+
+/** The outlined counterparts — these pin `bg-white`, so watch them in dark. */
+const badgeHighlightVariants: Array<NonNullable<BadgeProps["variant"]>> = [
+  "primary-highlight",
+  "accent-highlight",
+  "success-highlight",
+  "warning-highlight",
+  "error-highlight",
 ];
 
 const loadingVariants: Array<NonNullable<LoadingProps["variant"]>> = ["spinner", "dots", "bars"];
@@ -98,6 +109,9 @@ const statusLabels = { success: "Paid", warning: "Pending", error: "Overdue" } a
  * Add a row here whenever you add a component.
  */
 export function Showcase() {
+  const [offset, setOffset] = useState(0);
+  const [page, setPage] = useState(1);
+
   return (
     <>
       <Section title="Tokens" description="Toggle the theme in the header — every swatch should move with it.">
@@ -164,6 +178,36 @@ export function Showcase() {
             {variant}
           </Badge>
         ))}
+      </Section>
+
+      <Section
+        title="Badge — highlight variants"
+        description="Outlined counterparts of the fills above. They set bg-white directly, so toggle the theme and compare."
+      >
+        {badgeHighlightVariants.map((variant) => (
+          <Badge key={variant} variant={variant}>
+            {variant}
+          </Badge>
+        ))}
+      </Section>
+
+      <Section title="Badge — fill vs highlight" description="Same status, both treatments, on the page background.">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="primary">Primary</Badge>
+            <Badge variant="accent">Highlighted</Badge>
+            <Badge variant="success">Paid</Badge>
+            <Badge variant="warning">Pending</Badge>
+            <Badge variant="error">Overdue</Badge>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="primary-highlight">Primary</Badge>
+            <Badge variant="accent-highlight">Highlighted</Badge>
+            <Badge variant="success-highlight">Paid</Badge>
+            <Badge variant="warning-highlight">Pending</Badge>
+            <Badge variant="error-highlight">Overdue</Badge>
+          </div>
+        </div>
       </Section>
 
       <Section title="Input — states">
@@ -316,6 +360,46 @@ export function Showcase() {
           routes={mapRoutes}
           zoom={12}
         />
+      </Section>
+
+      <Section
+        title="Pagination — numbered (offset / page)"
+        description="Both modes know the total, so pages are jumpable. They differ only in the onChange payload."
+      >
+        <div className="flex w-full flex-col gap-4">
+          <Pagination
+            limit={20}
+            mode="offset"
+            offset={offset}
+            onChange={(change) => setOffset(change.offset)}
+            total={200}
+          />
+          <Pagination
+            mode="page"
+            onChange={(change) => setPage(change.page)}
+            page={page}
+            pageSize={10}
+            showJump
+            total={5000}
+          />
+        </div>
+      </Section>
+
+      <Section
+        title="Pagination — token (cursor / keyset / time)"
+        description="An opaque token can only step, and the total is usually unknown, so these render Previous / Next."
+      >
+        <div className="flex w-full flex-col gap-4">
+          <Pagination hasNext hasPrevious label="cursor" mode="cursor" nextToken="eyJpZCI6NDB9" onChange={() => {}} />
+          <Pagination hasNext label="keyset — after id 40" mode="keyset" nextToken={60} onChange={() => {}} />
+          <Pagination
+            hasNext
+            label="time — 2026-08-11"
+            mode="time"
+            nextToken="2026-08-11T00:00:00Z"
+            onChange={() => {}}
+          />
+        </div>
       </Section>
 
       <Section title="Card — full composition">

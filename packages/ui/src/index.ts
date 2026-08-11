@@ -20,6 +20,21 @@ export {
 export { Icon, type IconName, type IconProps, iconNames } from "./components/Atom/icon";
 export { Input, type InputProps } from "./components/Atom/input";
 export { Loading, type LoadingProps, type LoadingVariant } from "./components/Atom/loading";
+export {
+  getPageRange,
+  type PageSlot,
+  Pagination,
+  type PaginationChange,
+  type PaginationMode,
+  type PaginationOffsetChange,
+  type PaginationOffsetProps,
+  type PaginationPageChange,
+  type PaginationPageProps,
+  type PaginationProps,
+  type PaginationToken,
+  type PaginationTokenChange,
+  type PaginationTokenProps,
+} from "./components/Atom/pagination";
 export { Skeleton, type SkeletonProps } from "./components/Atom/skeleton";
 // Maps is NOT exported here — it lives at `@rakit-ui/ui/maps` so Leaflet stays
 // out of this bundle. See src/maps.ts.
