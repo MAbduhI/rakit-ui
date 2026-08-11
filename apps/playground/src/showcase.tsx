@@ -177,6 +177,18 @@ export function Showcase() {
       </Section>
 
       <Section
+        title="Input — leftIcon / rightIcon"
+        description="Icons sit over the field, so the input keeps its own border and focus ring. Clicking one focuses the input."
+      >
+        <div className="flex w-full max-w-sm flex-col gap-3">
+          <Input leftIcon="search" placeholder="Search orders" type="search" />
+          <Input placeholder="Pick a date" rightIcon="calendar" />
+          <Input defaultValue="INV-1041" leftIcon="search" rightIcon="x" />
+          <Input disabled leftIcon="user" placeholder="Disabled — icon dims too" />
+        </div>
+      </Section>
+
+      <Section
         title="Table — zebra striping"
         description="No Table component ships yet; this is the token recipe — odd:bg-surface / even:bg-surface-alt."
       >
