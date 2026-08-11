@@ -9,6 +9,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  Carousel,
   Divider,
   type DividerProps,
   FlyButton,
@@ -20,6 +21,7 @@ import {
   Loading,
   type LoadingProps,
   Pagination,
+  RunBanner,
   Skeleton,
 } from "@rakit-ui/ui";
 import { Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
@@ -74,6 +76,18 @@ const mapRoutes: Array<PolylineInput> = [
   { id: "run-1", coordinates: [[-6.2088, 106.8456] as [number, number], [-6.1751, 106.8272] as [number, number]] },
   { id: "run-2", coordinates: [[-6.2088, 106.8456] as [number, number], [-6.2297, 106.8295] as [number, number]] },
 ];
+
+const carouselSlides = (["bg-accent", "bg-accent-secondary", "bg-success", "bg-warning"] as const).map(
+  (tone, index) => (
+    <div key={tone} className={`flex h-48 items-center justify-center rounded-md ${tone}`}>
+      <span className="font-semibold text-accent-foreground text-xl">Slide {index + 1}</span>
+    </div>
+  ),
+);
+
+const runBannerItems = (["map-pin", "truck-delivery", "building-warehouse", "star", "bell", "check"] as const).map(
+  (name) => <Icon key={name} name={name} size="2xl" />,
+);
 
 /** Every token, so a palette edit can be eyeballed in both themes at once. */
 const swatches = [
@@ -399,6 +413,107 @@ export function Showcase() {
             nextToken="2026-08-11T00:00:00Z"
             onChange={() => {}}
           />
+        </div>
+      </Section>
+
+      <Section
+        title="Carousel — scroll, fade, vertical"
+        description="Hover or focus an autoplaying carousel to pause it. Arrow keys step it when focus is inside."
+      >
+        <div className="grid w-full gap-8 lg:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <code className="text-secondary text-xs">scroll + chevron + infinity</code>
+            <Carousel chevron="horizontal" infinity>
+              {carouselSlides}
+            </Carousel>
+          </div>
+          <div className="flex flex-col gap-2">
+            <code className="text-secondary text-xs">fade + autoScroll</code>
+            <Carousel autoScroll fade infinity speed={2500}>
+              {carouselSlides}
+            </Carousel>
+          </div>
+          <div className="flex flex-col gap-2">
+            <code className="text-secondary text-xs">vertical + navPosition="right"</code>
+            <Carousel chevron="vertical" navPosition="right" vertical>
+              {carouselSlides}
+            </Carousel>
+          </div>
+          <div className="flex flex-col gap-2">
+            <code className="text-secondary text-xs">navPosition="top", no chevron</code>
+            <Carousel navPosition="top">{carouselSlides}</Carousel>
+          </div>
+        </div>
+      </Section>
+
+      <Section
+        title="RunBanner — marquee"
+        description="Infinite by design: the content is rendered twice and the track slides by exactly one copy."
+      >
+        <div className="flex w-full flex-col gap-6">
+          <div className="flex flex-col gap-1">
+            <code className="text-secondary text-xs">nav="left" (default)</code>
+            <RunBanner className="rounded-md border border-border bg-surface-alt" size="2xl">
+              {runBannerItems}
+            </RunBanner>
+          </div>
+          <div className="flex flex-col gap-1">
+            <code className="text-secondary text-xs">nav="right", endGap, faster</code>
+            <RunBanner
+              className="rounded-md border border-border bg-surface-alt"
+              endGap
+              gap={64}
+              nav="right"
+              size="2xl"
+              speed={8000}
+            >
+              {runBannerItems}
+            </RunBanner>
+          </div>
+          <div className="flex gap-6">
+            <div className="flex flex-col gap-1">
+              <code className="text-secondary text-xs">nav="top"</code>
+              <RunBanner className="h-56 rounded-md border border-border bg-surface-alt" nav="top" size="2xl">
+                {runBannerItems}
+              </RunBanner>
+            </div>
+            <div className="flex flex-col gap-1">
+              <code className="text-secondary text-xs">nav="bottom"</code>
+              <RunBanner className="h-56 rounded-md border border-border bg-surface-alt" nav="bottom" size="2xl">
+                {runBannerItems}
+              </RunBanner>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Card — devider" description="Rules off the header and footer. Check both themes.">
+        <div className="flex flex-wrap gap-6">
+          <Card className="w-72">
+            <CardHeader>
+              <CardTitle>Without devider</CardTitle>
+              <CardDescription>Spacing alone separates the sections.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-secondary text-sm">Body copy.</p>
+            </CardContent>
+            <CardFooter>
+              <Button size="sm">Action</Button>
+            </CardFooter>
+          </Card>
+
+          <Card className="w-72">
+            <CardHeader devider>
+              <CardTitle>With devider</CardTitle>
+              <CardDescription>A rule marks each boundary.</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <p className="text-secondary text-sm">Body copy.</p>
+            </CardContent>
+            <CardFooter className="pt-6" devider>
+              <Button size="sm">Action</Button>
+            </CardFooter>
+          </Card>
         </div>
       </Section>
 

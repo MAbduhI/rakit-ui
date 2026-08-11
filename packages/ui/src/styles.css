@@ -154,3 +154,32 @@
     color: var(--color-primary);
   }
 }
+
+/*
+ * RunBanner's marquee. The track holds two identical copies of the content and
+ * slides by exactly one copy, so the loop has no seam.
+ *
+ * The distance has to be a variable rather than a literal `-50%`: when
+ * `endGap` adds a gap between the two copies, one copy is half that gap wider
+ * than half the track, and a plain -50% drifts a little on every lap.
+ * RunBanner sets `--rakit-run-shift` to the exact figure.
+ *
+ * Direction comes from `animation-direction: reverse`, not a second keyframe.
+ */
+@keyframes rakit-run-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--rakit-run-shift, -50%));
+  }
+}
+
+@keyframes rakit-run-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(var(--rakit-run-shift, -50%));
+  }
+}

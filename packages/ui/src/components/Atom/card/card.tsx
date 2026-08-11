@@ -9,8 +9,14 @@ export function Card({ className, ...props }: CardProps) {
   );
 }
 
-export function CardHeader({ className, ...props }: CardProps) {
-  return <div className={cn("flex flex-col gap-1.5 p-6", className)} {...props} />;
+export interface CardExtensionProps extends CardProps {
+  devider?: boolean;
+}
+
+export function CardHeader({ className, devider = false, ...props }: CardExtensionProps) {
+  return (
+    <div className={cn("flex flex-col gap-1.5 p-6", devider && "border-b border-b-black", className)} {...props} />
+  );
 }
 
 export function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
@@ -25,6 +31,8 @@ export function CardContent({ className, ...props }: CardProps) {
   return <div className={cn("p-6 pt-0", className)} {...props} />;
 }
 
-export function CardFooter({ className, ...props }: CardProps) {
-  return <div className={cn("flex items-center p-6 pt-0", className)} {...props} />;
+export function CardFooter({ devider = false, className, ...props }: CardExtensionProps) {
+  return (
+    <div className={cn("flex items-center p-6 pt-0", devider && "border-t border-t-black", className)} {...props} />
+  );
 }

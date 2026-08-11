@@ -4,6 +4,7 @@ export {
   Card,
   CardContent,
   CardDescription,
+  type CardExtensionProps,
   CardFooter,
   CardHeader,
   type CardProps,
@@ -36,6 +37,20 @@ export {
   type PaginationTokenProps,
 } from "./components/Atom/pagination";
 export { Skeleton, type SkeletonProps } from "./components/Atom/skeleton";
+export {
+  Carousel,
+  type CarouselChevron,
+  type CarouselEffect,
+  type CarouselNavPosition,
+  type CarouselProps,
+} from "./components/Molecule/carousel";
+export {
+  RunBanner,
+  type RunBannerNav,
+  type RunBannerOrientation,
+  type RunBannerProps,
+  type RunBannerSize,
+} from "./components/Molecule/run-banner";
 // Maps is NOT exported here — it lives at `@rakit-ui/ui/maps` so Leaflet stays
 // out of this bundle. See src/maps.ts.
 export {

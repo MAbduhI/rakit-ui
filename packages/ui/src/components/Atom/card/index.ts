@@ -2,6 +2,7 @@ export {
   Card,
   CardContent,
   CardDescription,
+  type CardExtensionProps,
   CardFooter,
   CardHeader,
   type CardProps,
