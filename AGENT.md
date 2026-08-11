@@ -107,6 +107,7 @@ These hold regardless of how work is split. A sub-agent that cannot satisfy one 
 - **Six edits per component**, four of them the implementer's, two the orchestrator's. A component missing its `src/index.ts` export builds, typechecks, and tests clean while being invisible to consumers.
 - **Never import a component's `.tsx` from outside its folder.** Import the folder.
 - **Story `title` decides the sidebar**, not the folder path: `Components/<Tier>/<Name>`.
+- **Every change reaches the playground.** Not just new components — a new variant, size, prop, or state needs a case in `apps/playground/src/showcase.tsx` that exercises it. A changed token or base class needs the existing sections re-checked in both themes. The showcase is the only place the whole library renders at once; a change invisible there is a change nobody reviewed.
 - **Verify before reporting done.** "Should pass" is not a result. Paste what actually ran.
 - **Report honestly.** A skipped step, a failing test, an improvised decision — say so. An orchestrator integrating N optimistic reports produces a broken tree and no idea which agent caused it.
 

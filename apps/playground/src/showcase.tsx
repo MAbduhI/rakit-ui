@@ -9,7 +9,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  Divider,
+  type DividerProps,
   Input,
+  Loading,
+  type LoadingProps,
+  Skeleton,
 } from "@rakit-ui/ui";
 import { Section } from "./app";
 
@@ -32,6 +37,12 @@ const badgeVariants: Array<NonNullable<BadgeProps["variant"]>> = [
   "warning",
   "error",
 ];
+
+const loadingVariants: Array<NonNullable<LoadingProps["variant"]>> = ["spinner", "dots", "bars"];
+
+const loadingSizes: Array<NonNullable<LoadingProps["size"]>> = ["sm", "md", "lg"];
+
+const dividerSizes: Array<NonNullable<DividerProps["size"]>> = ["sm", "md", "lg", "xl", "2xl"];
 
 /** Every token, so a palette edit can be eyeballed in both themes at once. */
 const swatches = [
@@ -104,6 +115,29 @@ export function Showcase() {
         ))}
       </Section>
 
+      <Section
+        title="Button — loading"
+        description="The indicator replaces the label and the button disables itself, so the width shifts."
+      >
+        {buttonVariants.map((variant) => (
+          <Button key={variant} loading variant={variant}>
+            {variant}
+          </Button>
+        ))}
+      </Section>
+
+      <Section title="Button — loadingType × size">
+        {loadingVariants.map((loadingType) => (
+          <div key={loadingType} className="flex items-center gap-3">
+            {buttonSizes.map((size) => (
+              <Button key={size} loading loadingType={loadingType} size={size}>
+                {loadingType} {size}
+              </Button>
+            ))}
+          </div>
+        ))}
+      </Section>
+
       <Section title="Badge — variants">
         {badgeVariants.map((variant) => (
           <Badge key={variant} variant={variant}>
@@ -148,6 +182,56 @@ export function Showcase() {
             ))}
           </tbody>
         </table>
+      </Section>
+
+      <Section title="Loading — variants" description="Every variant paints from the root's text color.">
+        {loadingVariants.map((variant) => (
+          <div key={variant} className="flex flex-col items-center gap-2">
+            <Loading variant={variant} />
+            <code className="text-secondary text-xs">{variant}</code>
+          </div>
+        ))}
+        <Loading className="text-error" variant="dots" />
+        <Loading className="text-success" variant="bars" />
+      </Section>
+
+      <Section title="Loading — sizes">
+        {loadingSizes.map((size) => (
+          <Loading key={size} size={size} />
+        ))}
+      </Section>
+
+      <Section title="Divider — horizontal thickness">
+        <div className="flex w-full flex-col gap-4">
+          {dividerSizes.map((size) => (
+            <div key={size} className="flex items-center gap-3">
+              <code className="w-10 shrink-0 text-secondary text-xs">{size}</code>
+              <Divider size={size} />
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Divider — vertical thickness">
+        <div className="flex h-16 items-center gap-4">
+          {dividerSizes.map((size) => (
+            <div key={size} className="flex h-full items-center gap-4">
+              <code className="text-secondary text-xs">{size}</code>
+              <Divider orientation="vertical" size={size} />
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Skeleton — shapes">
+        <div className="flex w-full max-w-sm gap-3">
+          <Skeleton className="w-10 shrink-0" variant="circle" />
+          <div className="flex w-full flex-col gap-2">
+            <Skeleton variant="text" />
+            <Skeleton className="w-2/3" variant="text" />
+            <Skeleton className="h-20 w-full" variant="rect" />
+          </div>
+        </div>
       </Section>
 
       <Section title="Card — full composition">

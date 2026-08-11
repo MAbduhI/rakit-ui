@@ -29,7 +29,7 @@ Ordered by dependency, not by preference. `FormField` first — it establishes t
 | 4   | `Alert`       | `.../alert`                          | —                            | `info`/`success`/`warning`/`error` on the status token pairs. Title + description slots. |
 | 5   | `Stat`        | `.../stat`                           | Badge                        | Label, value, optional delta. Delta direction uses `success`/`error`.                    |
 | 6   | `AvatarGroup` | `.../avatar-group`                   | Avatar                       | Overlap with `max`, then a `+N` overflow chip.                                           |
-| 7   | `Breadcrumb`  | `.../breadcrumb`                     | Link, Separator              | `<nav aria-label="Breadcrumb">`, `aria-current="page"` on the last crumb.                |
+| 7   | `Breadcrumb`  | `.../breadcrumb`                     | Link, Divider                | `<nav aria-label="Breadcrumb">`, `aria-current="page"` on the last crumb.                |
 | 8   | `Pagination`  | `.../pagination`                     | Button                       | Page-window ellipsis logic — the one item here with real logic worth unit-testing.       |
 | 9   | `Tooltip`     | `.../tooltip`                        | —                            | CSS/`popover`-positioned only. If it needs a portal or collision detection, defer to P4. |
 | 10  | `Tabs`        | `.../tabs`                           | Button                       | `Tabs`/`TabList`/`Tab`/`TabPanel`. Roving tabindex, arrow keys, `aria-controls`.         |

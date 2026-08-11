@@ -75,3 +75,45 @@ export const Disabled: Story = {
     disabled: true,
   },
 };
+
+export const Loading_: Story = {
+  name: "Loading",
+  args: {
+    loading: true,
+  },
+};
+
+export const LoadingTypes: Story = {
+  render: (args) => (
+    <div className="flex items-center gap-4">
+      <Button {...args} loading loadingType="spinner">
+        Spinner
+      </Button>
+      <Button {...args} loading loadingType="dots">
+        Dots
+      </Button>
+      <Button {...args} loading loadingType="bars">
+        Bars
+      </Button>
+    </div>
+  ),
+};
+
+export const LoadingAcrossVariants: Story = {
+  render: (args) => (
+    <div className="flex items-center gap-4">
+      <Button {...args} loading variant="primary">
+        Primary
+      </Button>
+      <Button {...args} loading variant="secondary">
+        Secondary
+      </Button>
+      <Button {...args} loading variant="outline">
+        Outline
+      </Button>
+      <Button {...args} loading variant="destructive">
+        Destructive
+      </Button>
+    </div>
+  ),
+};

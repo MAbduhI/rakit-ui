@@ -1,6 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "../../../utils/cn";
+import { Loading, type LoadingVariant } from "../loading";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 rounded-md font-medium text-sm transition-colors focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -26,8 +27,31 @@ const buttonVariants = cva(
   },
 );
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {}
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  loading?: boolean;
+  loadingType?: LoadingVariant;
+}
 
-export function Button({ className, variant, size, type = "button", ...props }: ButtonProps) {
-  return <button className={cn(buttonVariants({ variant, size }), className)} type={type} {...props} />;
+export function Button({
+  children,
+  className,
+  disabled,
+  variant,
+  size,
+  type = "button",
+  loading = false,
+  loadingType = "spinner",
+  ...props
+}: ButtonProps) {
+  return (
+    <button
+      aria-busy={loading || undefined}
+      className={cn(buttonVariants({ variant, size }), className)}
+      disabled={disabled || loading}
+      type={type}
+      {...props}
+    >
+      {loading ? <Loading size={size === "sm" ? "sm" : "md"} variant={loadingType} /> : children}
+    </button>
+  );
 }

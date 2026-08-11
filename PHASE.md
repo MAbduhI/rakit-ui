@@ -37,26 +37,25 @@ The theming contract and the tooling that enforces it.
 
 ## P2 — Atom tier 🔨
 
-Complete the single-element vocabulary. Four of roughly a dozen atoms exist; the gaps are what block P3, because a `FormField` cannot be built without `Label`.
+Complete the single-element vocabulary. Seven of roughly a dozen atoms exist; the gaps are what block P3, because a `FormField` cannot be built without `Label`.
 
-**Shipped:** `Button`, `Badge`, `Card` (+ `Header`/`Title`/`Description`/`Content`/`Footer`), `Input`.
+**Shipped:** `Button`, `Badge`, `Card` (+ `Header`/`Title`/`Description`/`Content`/`Footer`), `Input`, `Loading`, `Divider`, `Skeleton`.
 
 **Remaining**
 
-| Component   | Notes                                                              |
-| ----------- | ------------------------------------------------------------------ |
-| `Label`     | Blocks every form molecule in P3. Highest priority.                |
-| `Textarea`  | Mirror `Input`'s variant and sizing vocabulary.                    |
-| `Checkbox`  | Native input + token-styled indicator.                             |
-| `Radio`     | Ships with a `RadioGroup` wrapper.                                 |
-| `Switch`    | Button with `role="switch"`, not a checkbox.                       |
-| `Select`    | Native `<select>` at this tier; the custom listbox is an organism. |
-| `Avatar`    | Image with initials fallback.                                      |
-| `Spinner`   | Needs a `motion-reduce` path.                                      |
-| `Skeleton`  | Same.                                                              |
-| `Separator` | Horizontal + vertical, `role="separator"`.                         |
-| `Kbd`       | Keyboard key rendering.                                            |
-| `Link`      | Token-driven focus and visited states.                             |
+| Component  | Notes                                                              |
+| ---------- | ------------------------------------------------------------------ |
+| `Label`    | Blocks every form molecule in P3. Highest priority.                |
+| `Textarea` | Mirror `Input`'s variant and sizing vocabulary.                    |
+| `Checkbox` | Native input + token-styled indicator.                             |
+| `Radio`    | Ships with a `RadioGroup` wrapper.                                 |
+| `Switch`   | Button with `role="switch"`, not a checkbox.                       |
+| `Select`   | Native `<select>` at this tier; the custom listbox is an organism. |
+| `Avatar`   | Image with initials fallback.                                      |
+| `Kbd`      | Keyboard key rendering.                                            |
+| `Link`     | Token-driven focus and visited states.                             |
+
+`Divider` covers what this list originally called `Separator` — one component, not two. `Breadcrumb` in [M3_Plan.md](M3_Plan.md) composes `Divider`.
 
 **M2 exit criteria**
 
