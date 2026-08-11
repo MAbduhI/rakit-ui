@@ -1,0 +1,102 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Docs/Utilities" />
+
+# Utilities
+
+Helpers that ship alongside the components, exported from the package root.
+
+```tsx
+import { cn, debounce } from "@rakit-ui/ui";
+```
+
+## `cn`
+
+Merges class strings, resolving Tailwind conflicts so the last value wins. It is
+`clsx` for conditionals plus `tailwind-merge` for the conflict resolution.
+
+```tsx
+cn("px-3 py-2", "px-4"); // → "py-2 px-4"     — later padding wins
+cn("text-sm", isLarge && "text-base"); // → "text-base" when isLarge
+cn("bg-surface", undefined, null, false); // → "bg-surface"  — falsy values drop out
+```
+
+Every component runs its own classes through `cn()` with `className` last, which
+is why a consumer's class always beats the variant's:
+
+```tsx
+<Button variant="primary" className="bg-accent-secondary" />
+// renders with bg-accent-secondary, not bg-accent
+```
+
+## `debounce`
+
+Delays a call until `wait` ms have passed with no further calls. Only the most
+recent arguments are used, and nothing fires on the first call — the trailing
+edge only, which is what a search field or an autosave wants.
+
+```tsx
+import { debounce } from "@rakit-ui/ui";
+
+const search = debounce((term: string) => fetchResults(term), 300);
+
+search("ra");
+search("rak");
+search("rakit"); // only this one runs, 300ms after the last keystroke
+```
+
+`wait` defaults to `300`.
+
+### `cancel` and `flush`
+
+```tsx
+search.cancel(); // drop the pending call
+search.flush(); // run it now instead of waiting
+```
+
+### In a component
+
+Create the debounced function **once** — a fresh one on every render debounces
+nothing, because each keystroke gets its own timer. `useMemo` pins it, and the
+cleanup cancels the pending call so it cannot fire after unmount:
+
+```tsx
+import { useEffect, useMemo, useState } from "react";
+import { debounce, Input } from "@rakit-ui/ui";
+
+export function SearchOrders({
+  onSearch,
+}: {
+  onSearch: (term: string) => void;
+}) {
+  const [term, setTerm] = useState("");
+
+  const search = useMemo(() => debounce(onSearch, 300), [onSearch]);
+
+  useEffect(() => search.cancel, [search]);
+
+  return (
+    <Input
+      leftIcon="search"
+      placeholder="Search orders"
+      value={term}
+      onChange={(event) => {
+        setTerm(event.target.value);
+        search(event.target.value);
+      }}
+    />
+  );
+}
+```
+
+Keep the input's own value in state and un-debounced, so typing stays
+responsive; debounce only the expensive work downstream.
+
+### What it is not
+
+- **Not throttling.** Debounce waits for quiet; throttle runs at a fixed rate
+  during activity. A scroll or resize handler usually wants throttle.
+- **No leading edge.** If you need the first call to fire immediately, wrap it
+  yourself — `debounce` deliberately has no options object.
+- **Not for React state you render.** Debouncing the value you display makes the
+  field feel broken. Debounce the effect, never the keystroke.

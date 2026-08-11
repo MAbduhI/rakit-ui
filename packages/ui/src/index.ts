@@ -43,3 +43,4 @@ export {
   useTheme,
 } from "./theme";
 export { cn } from "./utils/cn";
+export { type DebouncedFunction, debounce } from "./utils/debouncer";
