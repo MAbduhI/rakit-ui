@@ -11,11 +11,17 @@ import {
   CardTitle,
   Divider,
   type DividerProps,
+  FlyButton,
+  FlyContainer,
+  Icon,
+  type IconProps,
   Input,
+  iconNames,
   Loading,
   type LoadingProps,
   Skeleton,
 } from "@rakit-ui/ui";
+import { Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
 import { Section } from "./app";
 
 const buttonVariants: Array<NonNullable<ButtonProps["variant"]>> = [
@@ -43,6 +49,20 @@ const loadingVariants: Array<NonNullable<LoadingProps["variant"]>> = ["spinner",
 const loadingSizes: Array<NonNullable<LoadingProps["size"]>> = ["sm", "md", "lg"];
 
 const dividerSizes: Array<NonNullable<DividerProps["size"]>> = ["sm", "md", "lg", "xl", "2xl"];
+
+const iconSizes: Array<NonNullable<IconProps["size"]>> = ["sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl"];
+
+/* Jakarta — a depot and two drops, mirroring the Storybook story. */
+const mapMarkers: Array<MarkerInput> = [
+  { id: "depot", coordinates: [-6.2088, 106.8456], legend: { label: "Depot", show: true } },
+  { id: "drop-a", coordinates: [-6.1751, 106.8272], legend: { label: "INV-1041", show: true } },
+  { id: "drop-b", coordinates: [-6.2297, 106.8295], legend: { label: "INV-1042", show: true } },
+];
+
+const mapRoutes: Array<PolylineInput> = [
+  { id: "run-1", coordinates: [[-6.2088, 106.8456] as [number, number], [-6.1751, 106.8272] as [number, number]] },
+  { id: "run-2", coordinates: [[-6.2088, 106.8456] as [number, number], [-6.2297, 106.8295] as [number, number]] },
+];
 
 /** Every token, so a palette edit can be eyeballed in both themes at once. */
 const swatches = [
@@ -232,6 +252,58 @@ export function Showcase() {
             <Skeleton className="h-20 w-full" variant="rect" />
           </div>
         </div>
+      </Section>
+
+      <Section title="Icon — sizes" description="Icons inherit currentColor, so any text token recolours them.">
+        {iconSizes.map((size) => (
+          <div key={size} className="flex flex-col items-center gap-2">
+            <Icon name="map-pin" size={size} />
+            <code className="text-secondary text-xs">{size}</code>
+          </div>
+        ))}
+      </Section>
+
+      <Section title="Icon — registry">
+        <div className="grid w-full grid-cols-4 gap-3 sm:grid-cols-8">
+          {iconNames.map((name) => (
+            <div key={name} className="flex flex-col items-center gap-1">
+              <Icon name={name} size="xl" />
+              <code className="text-center text-[10px] text-secondary">{name}</code>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="FlyContainer / FlyButton"
+        description="Both are position:fixed. The translate-x-0 on this box makes it the containing block, so they stay inside it instead of floating over the page."
+      >
+        <div className="relative h-80 w-full translate-x-0 rounded-md border border-border bg-surface-alt">
+          <FlyButton horizontal="left" icon="menu" vertical="top" />
+          <FlyButton horizontal="right" icon="search" variant="secondary" vertical="top" />
+          <FlyButton horizontal="left" icon="plus" vertical="bottom">
+            New order
+          </FlyButton>
+          <FlyButton horizontal="right" icon="message-circle" vertical="bottom" />
+          <FlyContainer horizontal="center" vertical="mid">
+            <div className="rounded-md border border-border bg-surface px-4 py-3 text-primary text-sm shadow-lg">
+              FlyContainer — any children
+            </div>
+          </FlyContainer>
+        </div>
+      </Section>
+
+      <Section
+        title="Maps — markers and routes"
+        description="Leaflet loads on the client; the fallback below it is what SSR and slow networks render."
+      >
+        <Maps
+          className="h-96 w-full overflow-hidden rounded-md border border-border"
+          center={[-6.2088, 106.8456]}
+          markers={mapMarkers}
+          routes={mapRoutes}
+          zoom={12}
+        />
       </Section>
 
       <Section title="Card — full composition">

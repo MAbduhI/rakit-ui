@@ -10,9 +10,19 @@ export {
   CardTitle,
 } from "./components/Atom/card";
 export { Divider, type DividerProps } from "./components/Atom/divider";
+export { FlyButton, type FlyButtonProps } from "./components/Atom/fly-button";
+export {
+  FlyContainer,
+  type FlyContainerProps,
+  type FlyHorizontal,
+  type FlyVertical,
+} from "./components/Atom/fly-container";
+export { Icon, type IconName, type IconProps, iconNames } from "./components/Atom/icon";
 export { Input, type InputProps } from "./components/Atom/input";
 export { Loading, type LoadingProps, type LoadingVariant } from "./components/Atom/loading";
 export { Skeleton, type SkeletonProps } from "./components/Atom/skeleton";
+// Maps is NOT exported here — it lives at `@rakit-ui/ui/maps` so Leaflet stays
+// out of this bundle. See src/maps.ts.
 export {
   applyTheme,
   getAppliedTheme,

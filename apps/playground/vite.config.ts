@@ -7,11 +7,14 @@ import { defineConfig } from "vite";
 // component hot-reloads here instantly without waiting for a tsup rebuild.
 // Keep this in sync with the `paths` entry in tsconfig.json.
 const uiSource = fileURLToPath(new URL("../../packages/ui/src/index.ts", import.meta.url));
+const uiMapsSource = fileURLToPath(new URL("../../packages/ui/src/maps.ts", import.meta.url));
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      // Longest specifier first — Vite matches aliases in order.
+      "@rakit-ui/ui/maps": uiMapsSource,
       "@rakit-ui/ui": uiSource,
     },
   },

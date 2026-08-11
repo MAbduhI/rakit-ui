@@ -4,3 +4,11 @@ packages:
 allowBuilds:
   esbuild: true
   lefthook: true
+
+# googlemutant imports `leaflet` but declares neither a dependency nor a peer on
+# it — it assumes a hoisted node_modules. pnpm links strictly, so the import
+# fails to resolve at bundle time until we declare the peer on its behalf.
+packageExtensions:
+  leaflet.gridlayer.googlemutant:
+    peerDependencies:
+      leaflet: "*"

@@ -1,0 +1,28 @@
+{
+  // Biome owns JS/TS formatting, import order, and Tailwind class order.
+  // `pnpm check:fix` does the same thing from the terminal; this just makes it
+  // happen on every save so nothing reaches the pre-commit hook unsorted.
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    // Sorts and groups imports (Biome's assist is already enabled in biome.jsonc).
+    "source.organizeImports.biome": "explicit",
+    // Applies the safe lint fixes, which is what sorts Tailwind classes
+    // (`useSortedClasses`) and normalises class shorthands.
+    "quickfix.biome": "explicit"
+  },
+  "[javascript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[javascriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[json]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[jsonc]": { "editor.defaultFormatter": "biomejs.biome" },
+
+  // Biome does not handle these — Prettier does, matching the lefthook hook.
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[mdx]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true
+}

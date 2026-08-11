@@ -16,6 +16,11 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./maps": {
+      "types": "./dist/maps.d.ts",
+      "import": "./dist/maps.js",
+      "require": "./dist/maps.cjs"
+    },
     "./styles.css": "./dist/styles.css"
   },
   "files": [
@@ -33,11 +38,14 @@
     "prepack": "pnpm build"
   },
   "dependencies": {
+    "@tabler/icons-react": "^3.46.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.0.0"
   },
   "peerDependencies": {
+    "leaflet": "^1.9.0",
+    "leaflet.gridlayer.googlemutant": "^0.16.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
@@ -48,10 +56,13 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "@types/leaflet": "^1.9.22",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^5.2.0",
     "jsdom": "^29.1.1",
+    "leaflet": "^1.9.4",
+    "leaflet.gridlayer.googlemutant": "^0.16.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "remark-gfm": "^4.0.1",
@@ -64,5 +75,13 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependenciesMeta": {
+    "leaflet": {
+      "optional": true
+    },
+    "leaflet.gridlayer.googlemutant": {
+      "optional": true
+    }
   }
 }
