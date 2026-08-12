@@ -117,6 +117,42 @@ export const WithoutClose: Story = {
   },
 };
 
+/**
+ * `clickOutside={false}` makes the backdrop inert, so the dialog can only be
+ * dismissed deliberately. Pair it with `showClose={false}` to force a choice.
+ */
+export const NoClickOutside: Story = {
+  args: { open: false, children: null },
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open locked dialog</Button>
+        <Dialog clickOutside={false} onClose={() => setOpen(false)} open={open}>
+          <DialogContent>
+            <DialogHeader devider showClose={false}>
+              <DialogTitle>Unsaved changes</DialogTitle>
+              <DialogDescription>Clicking the backdrop will not dismiss this one.</DialogDescription>
+            </DialogHeader>
+            <DialogBody className="py-4">
+              <p className="text-secondary text-sm">
+                Escape still works — that is the browser's own behaviour on a modal &lt;dialog&gt; and cannot be
+                switched off without breaking the keyboard exit.
+              </p>
+            </DialogBody>
+            <DialogFooter devider>
+              <Button onClick={() => setOpen(false)} variant="outline">
+                Discard
+              </Button>
+              <Button onClick={() => setOpen(false)}>Save and close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  },
+};
+
 /** Long bodies scroll inside the dialog; the header and footer stay put. */
 export const Scrolling: Story = {
   args: { open: false, children: null },

@@ -96,6 +96,36 @@ describe("Toaster", () => {
     expect(screen.getByTestId("count")).toHaveTextContent("0");
   });
 
+  describe("variant colours", () => {
+    it.each([
+      ["success", "bg-success", "text-success-foreground"],
+      ["error", "bg-error", "text-error-foreground"],
+      ["warning", "bg-warning", "text-warning-foreground"],
+    ] as const)("dresses the %s card in the Badge tone", async (variant, fill, foreground) => {
+      renderToaster({}, { variant, title: variant });
+      await userEvent.click(screen.getByRole("button", { name: "show" }));
+
+      const card = screen.getByText(variant).closest("[data-toast-id]");
+      expect(card).toHaveClass(fill, foreground);
+    });
+
+    it("uses the outlined tone for a highlight variant", async () => {
+      renderToaster({}, { variant: "error-highlight", title: "Overdue" });
+      await userEvent.click(screen.getByRole("button", { name: "show" }));
+
+      const card = screen.getByText("Overdue").closest("[data-toast-id]");
+      expect(card).toHaveClass("border-error", "text-error");
+    });
+
+    it("falls back to primary when no variant is given", async () => {
+      renderToaster({}, { title: "Plain" });
+      await userEvent.click(screen.getByRole("button", { name: "show" }));
+
+      const card = screen.getByText("Plain").closest("[data-toast-id]");
+      expect(card).toHaveClass("bg-accent", "text-accent-foreground");
+    });
+  });
+
   it.each(["top-left", "bottom-center", "top-right"] as const)("positions the region %s", (position) => {
     renderToaster({ position });
     expect(screen.getByRole("status")).toHaveClass("fixed");

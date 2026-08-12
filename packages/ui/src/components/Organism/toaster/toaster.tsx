@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import { cn } from "../../../utils";
-import { Badge } from "../../Atom/badge";
+import { badgeTones } from "../../Atom/badge";
 import { Icon } from "../../Atom/icon";
 import { type Toast, ToasterContext, type ToastOptions, type ToastPosition } from "./use-toaster";
 
@@ -116,23 +116,28 @@ function ToastCard({ toast, onClose }: ToastCardProps) {
     );
   }
 
+  /*
+   * The card itself wears the Badge variant — border, fill and text all come
+   * from `badgeTones`, so a toast and a badge of the same variant are the same
+   * colour by construction rather than by convention. Everything inside
+   * inherits `currentColor`.
+   */
   return (
     <div
-      className="pointer-events-auto flex w-80 max-w-[calc(100vw-2rem)] items-start gap-3 rounded-md border border-border bg-surface p-4 shadow-lg"
+      className={cn(
+        "pointer-events-auto flex w-80 max-w-[calc(100vw-2rem)] items-start gap-3 rounded-md border p-4 shadow-lg",
+        badgeTones[toast.variant ?? "primary"],
+      )}
       data-toast-id={toast.id}
     >
-      {toast.icon ? <Icon className="mt-0.5 shrink-0 text-secondary" name={toast.icon} size="md" /> : null}
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        {toast.title ? (
-          <div className="flex items-center gap-2">
-            <Badge variant={toast.variant}>{toast.title}</Badge>
-          </div>
-        ) : null}
-        {toast.description ? <p className="text-secondary text-sm">{toast.description}</p> : null}
+      {toast.icon ? <Icon className="mt-0.5 shrink-0" name={toast.icon} size="md" /> : null}
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        {toast.title ? <p className="font-semibold text-sm">{toast.title}</p> : null}
+        {toast.description ? <p className="text-sm opacity-80">{toast.description}</p> : null}
       </div>
       <button
         aria-label="Close notification"
-        className="-mr-1 -mt-1 shrink-0 rounded p-1 text-secondary transition-colors hover:bg-surface-alt hover:text-primary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+        className="-mr-1 -mt-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-current focus-visible:outline-offset-2"
         onClick={onClose}
         type="button"
       >

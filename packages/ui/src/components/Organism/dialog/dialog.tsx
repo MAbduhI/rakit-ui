@@ -19,10 +19,17 @@ export interface DialogProps extends Omit<HTMLAttributes<HTMLDialogElement>, "on
   open: boolean;
   onClose?: () => void;
   onOpen?: () => void;
+  /**
+   * Whether a click on the backdrop closes the dialog. Turn it off for a
+   * destructive confirm or an unsaved form, where dismissing by accident is
+   * expensive. Escape still closes — `<dialog>` handles that natively; pair
+   * this with `showClose={false}` and an explicit action to force a choice.
+   */
+  clickOutside?: boolean;
   children: ReactNode;
 }
 
-export function Dialog({ open, onClose, onOpen, children, className, ...props }: DialogProps) {
+export function Dialog({ open, onClose, onOpen, clickOutside = true, children, className, ...props }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const onOpenRef = useRef(onOpen);
   onOpenRef.current = onOpen;
@@ -54,7 +61,7 @@ export function Dialog({ open, onClose, onOpen, children, className, ...props }:
       // The backdrop is part of the dialog's box, so a click landing on the
       // element itself (not its content) is a click outside the panel.
       onClick={(event) => {
-        if (event.target === ref.current) {
+        if (clickOutside && event.target === ref.current) {
           onClose?.();
         }
       }}

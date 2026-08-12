@@ -97,6 +97,42 @@ describe("Dialog", () => {
     });
   });
 
+  describe("clickOutside", () => {
+    it("closes on a backdrop click by default", async () => {
+      const onClose = vi.fn();
+      renderDialog({ onClose });
+
+      // A click landing on the <dialog> itself is the backdrop; a click on the
+      // panel has DialogContent as its target and must not close.
+      await userEvent.click(screen.getByRole("dialog"));
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("ignores the backdrop when clickOutside is false", async () => {
+      const onClose = vi.fn();
+      renderDialog({ onClose, clickOutside: false });
+
+      await userEvent.click(screen.getByRole("dialog"));
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it("still closes from the ✕ when clickOutside is off", async () => {
+      const onClose = vi.fn();
+      renderDialog({ onClose, clickOutside: false });
+
+      await userEvent.click(screen.getByRole("button", { name: "Close" }));
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("never closes from a click inside the panel", async () => {
+      const onClose = vi.fn();
+      renderDialog({ onClose });
+
+      await userEvent.click(screen.getByText("This cannot be undone."));
+      expect(onClose).not.toHaveBeenCalled();
+    });
+  });
+
   describe("devider", () => {
     it("rules the header and footer when set", () => {
       renderDialog();
