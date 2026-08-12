@@ -51,6 +51,18 @@ export {
   type RunBannerProps,
   type RunBannerSize,
 } from "./components/Molecule/run-banner";
+export {
+  Tab,
+  type TabProps,
+  Tabs,
+  type TabsOrientation,
+  type TabsProps,
+  type TabsSide,
+  type TabsSize,
+  type TabsTriggerState,
+  type TabsVariant,
+  type TabsWidth,
+} from "./components/Molecule/tabs";
 // Maps is NOT exported here — it lives at `@rakit-ui/ui/maps` so Leaflet stays
 // out of this bundle. See src/maps.ts.
 export {

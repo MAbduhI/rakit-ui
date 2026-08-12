@@ -23,6 +23,9 @@ import {
   Pagination,
   RunBanner,
   Skeleton,
+  Tab,
+  Tabs,
+  type TabsProps,
 } from "@rakit-ui/ui";
 import { Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
 import { useState } from "react";
@@ -62,6 +65,8 @@ const loadingVariants: Array<NonNullable<LoadingProps["variant"]>> = ["spinner",
 const loadingSizes: Array<NonNullable<LoadingProps["size"]>> = ["sm", "md", "lg"];
 
 const dividerSizes: Array<NonNullable<DividerProps["size"]>> = ["sm", "md", "lg", "xl", "2xl"];
+
+const tabSizes: Array<NonNullable<TabsProps["size"]>> = ["sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl"];
 
 const iconSizes: Array<NonNullable<IconProps["size"]>> = ["sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl"];
 
@@ -483,6 +488,92 @@ export function Showcase() {
                 {runBannerItems}
               </RunBanner>
             </div>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Tabs — variants, widths, custom trigger">
+        <div className="flex w-full flex-col gap-8">
+          <div className="flex flex-col gap-1">
+            <code className="text-secondary text-xs">variant="default", icon + note</code>
+            <Tabs>
+              <Tab icon="home" label="Overview" value="a">
+                <p className="text-secondary text-sm">Totals and recent activity.</p>
+              </Tab>
+              <Tab icon="download" label="Invoices" note={<Badge variant="error">12</Badge>} value="b">
+                <p className="text-secondary text-sm">Every invoice, filterable.</p>
+              </Tab>
+              <Tab icon="settings" label="Settings" value="c">
+                <p className="text-secondary text-sm">Workspace preferences.</p>
+              </Tab>
+            </Tabs>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <code className="text-secondary text-xs">size sm → 5xl</code>
+            <div className="flex flex-col gap-4">
+              {tabSizes.map((size) => (
+                <Tabs key={size} size={size}>
+                  <Tab icon="home" label={`Overview ${size}`} value="a">
+                    <p className="text-secondary text-sm">Type, padding, gap and icon all scale together.</p>
+                  </Tab>
+                  <Tab icon="settings" label="Settings" value="b">
+                    <p className="text-secondary text-sm">Second panel.</p>
+                  </Tab>
+                </Tabs>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <code className="text-secondary text-xs">variant="panel", width="fill"</code>
+            <Tabs variant="panel" width="fill">
+              <Tab label="Day" value="d">
+                <p className="text-secondary text-sm">Today.</p>
+              </Tab>
+              <Tab label="Week" value="w">
+                <p className="text-secondary text-sm">This week.</p>
+              </Tab>
+              <Tab label="Month" value="m">
+                <p className="text-secondary text-sm">This month.</p>
+              </Tab>
+            </Tabs>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <code className="text-secondary text-xs">maxView=&#123;3&#125; — the rest collapse</code>
+            <Tabs maxView={3}>
+              {["Overview", "Invoices", "Clients", "Reports", "Settings", "Billing"].map((label) => (
+                <Tab key={label} label={label} value={label.toLowerCase()}>
+                  <p className="text-secondary text-sm">The {label} panel.</p>
+                </Tab>
+              ))}
+            </Tabs>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <code className="text-secondary text-xs">orientation="vertical" + renderTrigger</code>
+            <Tabs
+              orientation="vertical"
+              renderTrigger={(tab, state) => (
+                <button
+                  className={`flex w-40 items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors ${
+                    state.active ? "bg-accent text-accent-foreground" : "text-secondary hover:bg-surface-alt"
+                  }`}
+                  onClick={state.select}
+                  type="button"
+                >
+                  {tab.label}
+                </button>
+              )}
+            >
+              <Tab label="Profile" value="p">
+                <p className="text-secondary text-sm">Custom triggers, same state.</p>
+              </Tab>
+              <Tab label="Security" value="s">
+                <p className="text-secondary text-sm">Second panel.</p>
+              </Tab>
+            </Tabs>
           </div>
         </div>
       </Section>
