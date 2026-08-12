@@ -85,6 +85,30 @@ export {
   DialogTitle,
 } from "./components/Organism/dialog";
 export {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  type DrawerContentProps,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  type DrawerHeaderProps,
+  type DrawerProps,
+  type DrawerSectionProps,
+  type DrawerSide,
+  type DrawerSize,
+  DrawerTitle,
+} from "./components/Organism/drawer";
+export { DropdownMenu, type DropdownMenuItem, type DropdownMenuProps } from "./components/Organism/dropdown-menu";
+export { Popover, type PopoverPlacement, type PopoverProps } from "./components/Organism/popover";
+export {
+  Sidebar,
+  type SidebarItem,
+  type SidebarMode,
+  type SidebarProps,
+  type SidebarSide,
+} from "./components/Organism/sidebar";
+export {
   type Toast,
   type ToasterContextValue,
   ToasterProvider,

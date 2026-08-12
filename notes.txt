@@ -1,0 +1,6 @@
+Popover positioning has no collision detection, and an ancestor with overflow: hidden will clip it. It's absolute offsets against a relative wrapper — marked ponytail: in the source. That's exactly the trade P4_Plan.md flagged; if flipping near a viewport edge starts mattering, that's when a positioning engine earns its place. Dialog and Drawer don't have this problem — the top layer is the browser's.
+
+Two real bugs my own tests caught: the menu's active index never synced with actual focus, so arrowing after a Tab or click started from the wrong item (fixed with onFocus); and Biome correctly rejected my first attempt at putting the key handler on a wrapper <div> — the handler now lives on the buttons, which are the real focus targets.
+
+Nothing here is in the playground showcase yet, and none of it has been seen in a browser. The Popover placements and the Sidebar modes in particular want a real look — jsdom can't tell you whether a panel is clipped or a sticky sidebar actually sticks. Want me to add showcase sections?
+
