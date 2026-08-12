@@ -1,52 +1,62 @@
 import { Meta } from "@storybook/addon-docs/blocks";
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, useTheme } from "../src";
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+  useTheme,
+} from "../src";
 
 <Meta title="Docs/Theming" />
 
 export const ThemeDemo = () => {
   const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
 
-  // `sb-unstyled` opts this subtree out of Storybook's docs typography. Without
-  // it, Storybook colors the h3/p directly from the (light) docs theme, and a
-  // direct rule beats the color Card passes down by inheritance — so the title
-  // goes near-black on a dark card.
-  return (
-    <Card className="sb-unstyled max-w-xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          Live theme
-          <Badge variant={resolvedTheme === "dark" ? "accent" : "secondary"}>{resolvedTheme}</Badge>
-        </CardTitle>
-        <CardDescription>
-          preference: <code>{theme}</code> — this is the real hook writing <code>data-theme</code> on{" "}
-          <code>&lt;html&gt;</code>, so the whole page below moves with it.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" onClick={toggleTheme}>
-            Toggle
-          </Button>
-          <Button size="sm" variant="outline" disabled={theme === "light"} onClick={() => setTheme("light")}>
-            Light
-          </Button>
-          <Button size="sm" variant="outline" disabled={theme === "dark"} onClick={() => setTheme("dark")}>
-            Dark
-          </Button>
-          <Button size="sm" variant="ghost" disabled={theme === "system"} onClick={() => setTheme("system")}>
-            System
-          </Button>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="success">Paid</Badge>
-          <Badge variant="warning">Pending</Badge>
-          <Badge variant="error">Overdue</Badge>
-          <Badge variant="outline">Draft</Badge>
-        </div>
-        <Input placeholder="Focus me to see the ring in this theme" />
-      </CardContent>
-    </Card>
-  );
+// `sb-unstyled` opts this subtree out of Storybook's docs typography. Without
+// it, Storybook colors the h3/p directly from the (light) docs theme, and a
+// direct rule beats the color Card passes down by inheritance — so the title
+// goes near-black on a dark card.
+return (
+<Card className="sb-unstyled max-w-xl">
+<CardHeader>
+<CardTitle className="flex items-center gap-2">
+Live theme
+<Badge variant={resolvedTheme === "dark" ? "accent" : "secondary"}>{resolvedTheme}</Badge>
+</CardTitle>
+<CardDescription>
+preference: <code>{theme}</code> — this is the real hook writing <code>data-theme</code> on{" "}
+<code>&lt;html&gt;</code>, so the whole page below moves with it.
+</CardDescription>
+</CardHeader>
+<CardContent className="flex flex-col gap-4">
+<div className="flex flex-wrap items-center gap-2">
+<Button size="sm" onClick={toggleTheme}>
+Toggle
+</Button>
+<Button size="sm" variant="outline" disabled={theme === "light"} onClick={() => setTheme("light")}>
+Light
+</Button>
+<Button size="sm" variant="outline" disabled={theme === "dark"} onClick={() => setTheme("dark")}>
+Dark
+</Button>
+<Button size="sm" variant="ghost" disabled={theme === "system"} onClick={() => setTheme("system")}>
+System
+</Button>
+</div>
+<div className="flex flex-wrap items-center gap-2">
+<Badge variant="success">Paid</Badge>
+<Badge variant="warning">Pending</Badge>
+<Badge variant="error">Overdue</Badge>
+<Badge variant="outline">Draft</Badge>
+</div>
+<Input placeholder="Focus me to see the ring in this theme" />
+</CardContent>
+</Card>
+);
 };
 
 export const Swatch = ({ token, light, dark, usage }) => (
@@ -118,12 +128,12 @@ function ThemeToggle() {
 `useTheme()` needs no provider — it reads a module-level store, so every caller
 stays in sync. It returns:
 
-| Field | Type | Notes |
-| --- | --- | --- |
-| `theme` | `"light" \| "dark" \| "system"` | what the user picked |
-| `resolvedTheme` | `"light" \| "dark"` | what is on screen |
-| `setTheme(theme)` | | persists to `localStorage` under `rakit-ui-theme` |
-| `toggleTheme()` | | flips light ↔ dark as an explicit choice |
+| Field             | Type                            | Notes                                             |
+| ----------------- | ------------------------------- | ------------------------------------------------- |
+| `theme`           | `"light" \| "dark" \| "system"` | what the user picked                              |
+| `resolvedTheme`   | `"light" \| "dark"`             | what is on screen                                 |
+| `setTheme(theme)` |                                 | persists to `localStorage` under `rakit-ui-theme` |
+| `toggleTheme()`   |                                 | flips light ↔ dark as an explicit choice          |
 
 The default is `"system"`, which follows `prefers-color-scheme` and keeps
 following it until the user chooses. `setTheme("system")` clears the stored
@@ -164,12 +174,48 @@ Utility names follow the token name: `--color-surface-alt` → `bg-surface-alt`,
   </thead>
   <tbody>
     <Swatch token="bg" light="#F7F7F5" dark="#0D1117" usage="Page background" />
-    <Swatch token="surface" light="#FFFFFF" dark="#151B26" usage="Cards, panels, modals" />
-    <Swatch token="surface-alt" light="#EFF1F3" dark="#1A2130" usage="Table zebra-striping, subtle sections" />
-    <Swatch token="surface-hover" light="#E3E5E8" dark="#242C3B" usage="Hover fill on ghost/outline/secondary" />
-    <Swatch token="border" light="#E3E5E8" dark="#242C3B" usage="Dividers, card borders" />
-    <Swatch token="input" light="#828995" dark="#626D80" usage="Form-control borders" />
-    <Swatch token="ring" light="#2E3A6E" dark="#6B7BC4" usage="Focus indicator" />
+    <Swatch
+      token="surface"
+      light="#FFFFFF"
+      dark="#151B26"
+      usage="Cards, panels, modals"
+    />
+    <Swatch
+      token="surface-alt"
+      light="#EFF1F3"
+      dark="#1A2130"
+      usage="Table zebra-striping, subtle sections"
+    />
+    <Swatch
+      token="surface-hover"
+      light="#E3E5E8"
+      dark="#242C3B"
+      usage="Hover fill on ghost/outline/secondary"
+    />
+    <Swatch
+      token="border"
+      light="#E3E5E8"
+      dark="#242C3B"
+      usage="Dividers, card borders"
+    />
+    <Swatch
+      token="input"
+      light="#828995"
+      dark="#626D80"
+      usage="Form-control borders"
+    />
+    <Swatch
+      token="ring"
+      light="#2E3A6E"
+      dark="#6B7BC4"
+      usage="Focus indicator"
+    />
+    <Swatch
+      token="overlay"
+      light="#1A1D23"
+      dark="#05070A"
+      usage="Scrim behind a modal (Dialog)"
+    />
   </tbody>
 </table>
 
@@ -185,10 +231,30 @@ Utility names follow the token name: `--color-surface-alt` → `bg-surface-alt`,
     </tr>
   </thead>
   <tbody>
-    <Swatch token="accent" light="#2E3A6E" dark="#2E3A6E" usage="Primary buttons, links, active nav" />
-    <Swatch token="accent-foreground" light="#F7F7F5" dark="#F7F7F5" usage="Text on an accent fill" />
-    <Swatch token="accent-secondary" light="#8A6D3B" dark="#B08D57" usage="Highlights, active tab underline" />
-    <Swatch token="accent-secondary-foreground" light="#F7F7F5" dark="#0D1117" usage="Text on an accent-secondary fill" />
+    <Swatch
+      token="accent"
+      light="#2E3A6E"
+      dark="#2E3A6E"
+      usage="Primary buttons, links, active nav"
+    />
+    <Swatch
+      token="accent-foreground"
+      light="#F7F7F5"
+      dark="#F7F7F5"
+      usage="Text on an accent fill"
+    />
+    <Swatch
+      token="accent-secondary"
+      light="#8A6D3B"
+      dark="#B08D57"
+      usage="Highlights, active tab underline"
+    />
+    <Swatch
+      token="accent-secondary-foreground"
+      light="#F7F7F5"
+      dark="#0D1117"
+      usage="Text on an accent-secondary fill"
+    />
   </tbody>
 </table>
 
@@ -209,7 +275,12 @@ stay legible against each background.
   </thead>
   <tbody>
     <Swatch token="primary" light="#1A1D23" dark="#EDEDEF" usage="Main text" />
-    <Swatch token="secondary" light="#5B6270" dark="#9AA1AC" usage="Muted/secondary text" />
+    <Swatch
+      token="secondary"
+      light="#5B6270"
+      dark="#9AA1AC"
+      usage="Muted/secondary text"
+    />
   </tbody>
 </table>
 
@@ -233,12 +304,42 @@ makes `bg-primary` a near-black fill, **not** the brand navy — the brand is
     </tr>
   </thead>
   <tbody>
-    <Swatch token="success" light="#2E7D5B" dark="#4C8B6B" usage="Success states, positive status" />
-    <Swatch token="success-foreground" light="#F7F7F5" dark="#0D1117" usage="Text on a success fill" />
-    <Swatch token="warning" light="#B8842A" dark="#C9A24E" usage="Warning states" />
-    <Swatch token="warning-foreground" light="#1A1D23" dark="#0D1117" usage="Text on a warning fill" />
-    <Swatch token="error" light="#B0413A" dark="#B0554A" usage="Error states, destructive actions" />
-    <Swatch token="error-foreground" light="#F7F7F5" dark="#F7F7F5" usage="Text on an error fill" />
+    <Swatch
+      token="success"
+      light="#2E7D5B"
+      dark="#4C8B6B"
+      usage="Success states, positive status"
+    />
+    <Swatch
+      token="success-foreground"
+      light="#F7F7F5"
+      dark="#0D1117"
+      usage="Text on a success fill"
+    />
+    <Swatch
+      token="warning"
+      light="#B8842A"
+      dark="#C9A24E"
+      usage="Warning states"
+    />
+    <Swatch
+      token="warning-foreground"
+      light="#1A1D23"
+      dark="#0D1117"
+      usage="Text on a warning fill"
+    />
+    <Swatch
+      token="error"
+      light="#B0413A"
+      dark="#B0554A"
+      usage="Error states, destructive actions"
+    />
+    <Swatch
+      token="error-foreground"
+      light="#F7F7F5"
+      dark="#F7F7F5"
+      usage="Text on an error fill"
+    />
   </tbody>
 </table>
 
@@ -248,20 +349,26 @@ Status colors are the only greens, ambers, and reds in the system. Reach for
 
 ## Contrast
 
+`--color-overlay` is the one token with no contrast requirement: it is a scrim,
+never a text or border colour, and `Dialog` paints it at 60% opacity. It stays
+on the dark end of the ramp in both themes — a light scrim over a dark page
+reads as a flash rather than a dimming, which is why it does not mirror the
+usual light/dark flip.
+
 Measured WCAG 2.1 ratios for the pairings components actually use. Body text
 needs 4.5:1; non-text UI boundaries need 3:1.
 
-| Pairing | Light | Dark |
-| --- | --- | --- |
-| `primary` on `surface` | 16.88:1 | 14.76:1 |
-| `secondary` on `surface` | 6.13:1 | 6.63:1 |
-| `secondary` on `surface-alt` | 5.41:1 | 6.19:1 |
-| `accent-foreground` on `accent` | 10.06:1 | 10.06:1 |
-| `success-foreground` on `success` | 4.66:1 | 4.70:1 |
-| `warning-foreground` on `warning` | 5.12:1 | 7.90:1 |
-| `error-foreground` on `error` | 5.34:1 | 4.61:1 |
-| `input` border on `surface` | 3.52:1 | 3.30:1 |
-| `ring` on `bg` | 10.06:1 | 4.74:1 |
+| Pairing                           | Light   | Dark    |
+| --------------------------------- | ------- | ------- |
+| `primary` on `surface`            | 16.88:1 | 14.76:1 |
+| `secondary` on `surface`          | 6.13:1  | 6.63:1  |
+| `secondary` on `surface-alt`      | 5.41:1  | 6.19:1  |
+| `accent-foreground` on `accent`   | 10.06:1 | 10.06:1 |
+| `success-foreground` on `success` | 4.66:1  | 4.70:1  |
+| `warning-foreground` on `warning` | 5.12:1  | 7.90:1  |
+| `error-foreground` on `error`     | 5.34:1  | 4.61:1  |
+| `input` border on `surface`       | 3.52:1  | 3.30:1  |
+| `ring` on `bg`                    | 10.06:1 | 4.74:1  |
 
 Two notes on why extra tokens exist:
 
@@ -273,7 +380,7 @@ Two notes on why extra tokens exist:
   dark page — an invisible focus indicator. The dark ring keeps the hue and
   lifts the lightness until it clears 3:1 everywhere.
 
-Note that `accent` used as *text* on a dark surface is 1.60:1 and must not be
+Note that `accent` used as _text_ on a dark surface is 1.60:1 and must not be
 used that way — on dark, link and active-nav text should use `text-ring` or
 `text-accent-secondary`.
 

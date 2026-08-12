@@ -10,6 +10,13 @@ import {
   CardHeader,
   CardTitle,
   Carousel,
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   Divider,
   type DividerProps,
   FlyButton,
@@ -21,11 +28,14 @@ import {
   Loading,
   type LoadingProps,
   Pagination,
+  Progress,
   RunBanner,
   Skeleton,
   Tab,
   Tabs,
   type TabsProps,
+  ToasterProvider,
+  useToaster,
 } from "@rakit-ui/ui";
 import { Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
 import { useState } from "react";
@@ -110,6 +120,7 @@ const swatches = [
   "bg-success",
   "bg-warning",
   "bg-error",
+  "bg-overlay",
 ];
 
 const invoices = [
@@ -121,6 +132,56 @@ const invoices = [
 
 const statusLabels = { success: "Paid", warning: "Pending", error: "Overdue" } as const;
 
+function ToasterDemo() {
+  const { showToaster, closeAllToast, toasts } = useToaster();
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <Button
+        onClick={() => showToaster({ variant: "success", title: "Saved", description: "Invoice updated." })}
+        size="sm"
+      >
+        success
+      </Button>
+      <Button
+        onClick={() => showToaster({ variant: "error", title: "Failed", description: "Could not reach the server." })}
+        size="sm"
+        variant="outline"
+      >
+        error
+      </Button>
+      <Button
+        onClick={() =>
+          showToaster({
+            variant: "custom",
+            duration: 0,
+            render: ({ close }) => (
+              <div className="flex w-72 items-center gap-3 rounded-full border border-border bg-primary py-2 pr-2 pl-4 shadow-lg">
+                <Icon className="shrink-0 text-bg" name="trash" size="sm" />
+                <p className="flex-1 text-bg text-sm">Invoice deleted</p>
+                <button
+                  className="shrink-0 rounded-full bg-bg px-3 py-1 font-semibold text-primary text-xs"
+                  onClick={close}
+                  type="button"
+                >
+                  Undo
+                </button>
+              </div>
+            ),
+          })
+        }
+        size="sm"
+        variant="secondary"
+      >
+        custom
+      </Button>
+      <Button disabled={toasts.length === 0} onClick={closeAllToast} size="sm" variant="destructive">
+        closeAllToast()
+      </Button>
+      <code className="text-secondary text-xs">{toasts.length} open</code>
+    </div>
+  );
+}
+
 /**
  * Every exported component with all of its variants and states, so a token or
  * base-class change can be eyeballed everywhere at once.
@@ -129,6 +190,8 @@ const statusLabels = { success: "Paid", warning: "Pending", error: "Overdue" } a
  */
 export function Showcase() {
   const [offset, setOffset] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [progress, setProgress] = useState(60);
   const [page, setPage] = useState(1);
 
   return (
@@ -576,6 +639,61 @@ export function Showcase() {
             </Tabs>
           </div>
         </div>
+      </Section>
+
+      <Section title="Progress — variants" description="value is always 0–100; steps splits it for dot and stepper.">
+        <div className="flex w-full flex-col gap-6">
+          <div className="flex items-center gap-4">
+            <Button onClick={() => setProgress((v) => Math.max(0, v - 20))} size="sm" variant="outline">
+              −20
+            </Button>
+            <Button onClick={() => setProgress((v) => Math.min(100, v + 20))} size="sm">
+              +20
+            </Button>
+            <code className="text-secondary text-xs">value = {progress}</code>
+          </div>
+          <div className="max-w-md">
+            <Progress value={progress} />
+          </div>
+          <Progress steps={5} value={progress} variant="dot" />
+          <Progress labels={["Cart", "Address", "Payment", "Done"]} steps={4} value={progress} variant="stepper" />
+          <div className="flex items-end gap-6">
+            <Progress size="sm" value={progress} variant="round" />
+            <Progress size="md" status="success" value={progress} variant="round" />
+            <Progress size="lg" status="warning" value={progress} variant="round" />
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Dialog" description="Built on the native <dialog>, so Escape, focus trap and backdrop are free.">
+        <Button onClick={() => setDialogOpen(true)}>Open dialog</Button>
+        <Dialog onClose={() => setDialogOpen(false)} open={dialogOpen}>
+          <DialogContent>
+            <DialogHeader devider>
+              <DialogTitle>Delete invoice</DialogTitle>
+              <DialogDescription>INV-1043 — Teras Digital</DialogDescription>
+            </DialogHeader>
+            <DialogBody className="py-4">
+              <p className="text-secondary text-sm">
+                Try Escape, the backdrop, and the ✕ — all three route through onClose.
+              </p>
+            </DialogBody>
+            <DialogFooter devider>
+              <Button onClick={() => setDialogOpen(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={() => setDialogOpen(false)} variant="destructive">
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </Section>
+
+      <Section title="Toaster" description="useToaster() gives showToaster, closeToast(id) and closeAllToast.">
+        <ToasterProvider position="bottom-right">
+          <ToasterDemo />
+        </ToasterProvider>
       </Section>
 
       <Section title="Card — devider" description="Rules off the header and footer. Check both themes.">

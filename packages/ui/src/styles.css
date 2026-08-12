@@ -38,6 +38,9 @@
    */
   --color-input: #828995;
   --color-ring: #2e3a6e;
+  /* Scrim behind a modal. Always the dark end of the ramp — a light scrim in
+   * dark mode reads as a flash, not a dimming. */
+  --color-overlay: #1a1d23;
 
   /* Brand ---------------------------------------------------------------- */
   --color-accent: #2e3a6e;
@@ -87,6 +90,7 @@
    * indicator. Same hue, lifted until it clears 3:1 on every dark surface.
    */
   --color-ring: #6b7bc4;
+  --color-overlay: #05070a;
 
   /* Accent keeps its light-theme hex on purpose — brand consistency. */
   --color-accent: #2e3a6e;
@@ -118,6 +122,7 @@
     --color-border: #242c3b;
     --color-input: #626d80;
     --color-ring: #6b7bc4;
+    --color-overlay: #05070a;
 
     --color-accent: #2e3a6e;
     --color-accent-foreground: #f7f7f5;
