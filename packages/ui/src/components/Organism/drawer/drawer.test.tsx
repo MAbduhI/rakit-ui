@@ -99,6 +99,58 @@ describe("Drawer", () => {
     });
   });
 
+  describe("animation", () => {
+    it("slides in from the pinned edge by default", () => {
+      renderDrawer({ side: "right" });
+      const drawer = screen.getByRole("dialog");
+      expect(drawer).toHaveClass("rakit-anim");
+      expect(drawer.style.getPropertyValue("--rakit-anim-translate")).toBe("100% 0");
+    });
+
+    it.each([
+      ["left", "-100% 0"],
+      ["right", "100% 0"],
+      ["top", "0 -100%"],
+      ["bottom", "0 100%"],
+    ] as const)("slides from %s", (side, expected) => {
+      renderDrawer({ side });
+      expect(screen.getByRole("dialog").style.getPropertyValue("--rakit-anim-translate")).toBe(expected);
+    });
+
+    it("fades without translating", () => {
+      renderDrawer({ animation: "fade" });
+      const drawer = screen.getByRole("dialog");
+      expect(drawer.style.getPropertyValue("--rakit-anim-opacity")).toBe("0");
+      expect(drawer.style.getPropertyValue("--rakit-anim-translate")).toBe("");
+    });
+
+    it("scales and fades together", () => {
+      renderDrawer({ animation: "scale" });
+      const drawer = screen.getByRole("dialog");
+      expect(drawer.style.getPropertyValue("--rakit-anim-scale")).toBe("0.96");
+      expect(drawer.style.getPropertyValue("--rakit-anim-opacity")).toBe("0");
+    });
+
+    it("combines slide and fade", () => {
+      renderDrawer({ animation: "slide-fade", side: "bottom" });
+      const drawer = screen.getByRole("dialog");
+      expect(drawer.style.getPropertyValue("--rakit-anim-translate")).toBe("0 100%");
+      expect(drawer.style.getPropertyValue("--rakit-anim-opacity")).toBe("0");
+    });
+
+    it("drops the animation class entirely when none", () => {
+      renderDrawer({ animation: "none" });
+      expect(screen.getByRole("dialog")).not.toHaveClass("rakit-anim");
+    });
+
+    it("applies duration and ease", () => {
+      renderDrawer({ duration: 500, ease: "cubic-bezier(0.4, 0, 0.2, 1)" });
+      const drawer = screen.getByRole("dialog");
+      expect(drawer.style.getPropertyValue("--rakit-anim-duration")).toBe("500ms");
+      expect(drawer.style.getPropertyValue("--rakit-anim-ease")).toBe("cubic-bezier(0.4, 0, 0.2, 1)");
+    });
+  });
+
   it("rules the header and footer when devider is set", () => {
     renderDrawer();
     expect(screen.getByText("Filters").parentElement?.parentElement).toHaveClass("border-b");

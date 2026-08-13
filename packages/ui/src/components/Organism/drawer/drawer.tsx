@@ -1,4 +1,12 @@
-import { createContext, type HTMLAttributes, type ReactNode, useContext, useEffect, useRef } from "react";
+import {
+  type CSSProperties,
+  createContext,
+  type HTMLAttributes,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import { cn } from "../../../utils";
 import { Icon } from "../../Atom/icon";
 
@@ -8,6 +16,37 @@ import { Icon } from "../../Atom/icon";
 
 export type DrawerSide = "left" | "right" | "top" | "bottom";
 export type DrawerSize = "sm" | "md" | "lg" | "xl" | "full";
+export type DrawerAnimation = "none" | "slide" | "fade" | "scale" | "slide-fade";
+
+/*
+ * Closed-state values, handed to the `.rakit-anim` rules in styles.css as
+ * custom properties. The open state is the element's own defaults, so nothing
+ * needs to be declared for it.
+ *
+ * `slide` translates in from the edge the drawer is pinned to.
+ */
+const slideFrom: Record<DrawerSide, string> = {
+  left: "-100% 0",
+  right: "100% 0",
+  top: "0 -100%",
+  bottom: "0 100%",
+};
+
+function closedState(animation: DrawerAnimation, side: DrawerSide): Record<string, string> {
+  if (animation === "none") {
+    return {};
+  }
+  if (animation === "fade") {
+    return { "--rakit-anim-opacity": "0" };
+  }
+  if (animation === "scale") {
+    return { "--rakit-anim-opacity": "0", "--rakit-anim-scale": "0.96" };
+  }
+  if (animation === "slide-fade") {
+    return { "--rakit-anim-opacity": "0", "--rakit-anim-translate": slideFrom[side] };
+  }
+  return { "--rakit-anim-translate": slideFrom[side] };
+}
 
 interface DrawerContextValue {
   close: () => void;
@@ -46,6 +85,12 @@ export interface DrawerProps extends Omit<HTMLAttributes<HTMLDialogElement>, "on
   onOpen?: () => void;
   /** Whether a backdrop click closes it. Escape always does. */
   clickOutside?: boolean;
+  /** How it enters and leaves. Defaults to sliding in from `side`. */
+  animation?: DrawerAnimation;
+  /** Transition duration in ms. */
+  duration?: number;
+  /** Any CSS transition-timing-function. */
+  ease?: string;
   children: ReactNode;
 }
 
@@ -56,8 +101,12 @@ export function Drawer({
   onClose,
   onOpen,
   clickOutside = true,
+  animation = "slide",
+  duration = 300,
+  ease = "ease",
   children,
   className,
+  style,
   ...props
 }: DrawerProps) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -86,6 +135,7 @@ export function Drawer({
       className={cn(
         "max-h-dvh max-w-dvw border-border bg-surface p-0 text-primary shadow-lg",
         "backdrop:bg-overlay/60 backdrop:backdrop-blur-[1px]",
+        animation !== "none" && "rakit-anim",
         sides[side],
         isInline ? inlineSizes[size] : blockSizes[size],
         className,
@@ -96,6 +146,14 @@ export function Drawer({
         }
       }}
       onClose={() => onClose?.()}
+      style={
+        {
+          "--rakit-anim-duration": `${duration}ms`,
+          "--rakit-anim-ease": ease,
+          ...closedState(animation, side),
+          ...style,
+        } as CSSProperties
+      }
       {...props}
     >
       <DrawerContext.Provider value={{ close: () => onClose?.() }}>{children}</DrawerContext.Provider>

@@ -5,6 +5,7 @@ import {
   type ReactElement,
   type ReactNode,
   useCallback,
+  useEffect,
   useId,
   useRef,
   useState,
@@ -60,6 +61,17 @@ export interface PopoverProps extends Omit<HTMLAttributes<HTMLDivElement>, "cont
   /** Classes for the floating panel — `className` styles the wrapper. */
   contentClassName?: string;
   role?: "dialog" | "menu" | "listbox";
+  /**
+   * Also open on pointer enter and on focus. Clicking still works — hover
+   * alone would leave the panel unreachable by keyboard or touch.
+   */
+  onHover?: boolean;
+  /**
+   * Grace period before a hover-opened panel closes, in ms. The panel sits a
+   * few pixels off the trigger, and without this the pointer closes it while
+   * crossing that gap.
+   */
+  hoverCloseDelay?: number;
 }
 
 export function Popover({
@@ -72,6 +84,8 @@ export function Popover({
   className,
   contentClassName,
   role = "dialog",
+  onHover = false,
+  hoverCloseDelay = 150,
   ...props
 }: PopoverProps) {
   const [uncontrolled, setUncontrolled] = useState(defaultOpen);
@@ -92,6 +106,33 @@ export function Popover({
   const dismiss = useCallback(() => setOpen(false), [setOpen]);
   useDismiss(wrapperRef, open, dismiss);
 
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  const hoverHandlers = onHover
+    ? {
+        onPointerEnter: () => {
+          clearTimeout(closeTimer.current);
+          setOpen(true);
+        },
+        onPointerLeave: () => {
+          clearTimeout(closeTimer.current);
+          closeTimer.current = setTimeout(() => setOpen(false), hoverCloseDelay);
+        },
+        // Focus is the keyboard equivalent of hover; without it a hover-opened
+        // panel is unreachable without a mouse.
+        onFocus: () => {
+          clearTimeout(closeTimer.current);
+          setOpen(true);
+        },
+        onBlur: (event: React.FocusEvent<HTMLDivElement>) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setOpen(false);
+          }
+        },
+      }
+    : {};
+
   const triggerNode = isValidElement<HTMLAttributes<HTMLElement>>(trigger)
     ? cloneElement(trigger, {
         "aria-controls": open ? contentId : undefined,
@@ -99,13 +140,15 @@ export function Popover({
         "aria-haspopup": role,
         onClick: (event: React.MouseEvent<HTMLElement>) => {
           trigger.props.onClick?.(event);
-          setOpen(!open);
+          // With `onHover`, the pointer has already opened it by the time the
+          // click lands — toggling here would slam it shut on the first click.
+          setOpen(onHover ? true : !open);
         },
       })
     : trigger;
 
   return (
-    <div ref={wrapperRef} className={cn("relative inline-block", className)} {...props}>
+    <div ref={wrapperRef} className={cn("relative inline-block", className)} {...hoverHandlers} {...props}>
       {triggerNode}
       {open ? (
         <div

@@ -71,6 +71,12 @@ describe("DropdownMenu", () => {
     expect(screen.getByRole("menuitem", { name: "Delete" })).toHaveClass("text-error");
   });
 
+  it("opens on hover when onHover is set", async () => {
+    render(<DropdownMenu items={items} onHover trigger={trigger} />);
+    await userEvent.hover(screen.getByRole("button", { name: "Actions" }));
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+  });
+
   describe("keyboard", () => {
     it("moves down the enabled items, skipping the disabled one", async () => {
       render(<DropdownMenu items={items} trigger={trigger} />);

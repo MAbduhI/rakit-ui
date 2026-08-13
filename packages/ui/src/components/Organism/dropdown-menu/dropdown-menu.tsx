@@ -26,6 +26,9 @@ export interface DropdownMenuProps {
   onSelect?: (item: DropdownMenuItem) => void;
   /** Keep the menu open after a selection — useful for toggles. */
   closeOnSelect?: boolean;
+  /** Open on pointer enter and focus as well as click. */
+  onHover?: boolean;
+  hoverCloseDelay?: number;
   className?: string;
   contentClassName?: string;
 }
@@ -39,6 +42,8 @@ export function DropdownMenu({
   onOpenChange,
   onSelect,
   closeOnSelect = true,
+  onHover = false,
+  hoverCloseDelay,
   className,
   contentClassName,
 }: DropdownMenuProps) {
@@ -99,6 +104,8 @@ export function DropdownMenu({
     <Popover
       className={className}
       contentClassName={cn("flex min-w-48 flex-col", contentClassName)}
+      hoverCloseDelay={hoverCloseDelay}
+      onHover={onHover}
       onOpenChange={setOpen}
       open={open}
       placement={placement}

@@ -19,6 +19,12 @@ const meta = {
   argTypes: {
     side: { control: "inline-radio", options: ["left", "right", "top", "bottom"] },
     size: { control: "select", options: ["sm", "md", "lg", "xl", "full"] },
+    animation: { control: "select", options: ["none", "slide", "fade", "scale", "slide-fade"] },
+    duration: { control: { type: "range", min: 0, max: 1500, step: 50 } },
+    ease: {
+      control: "select",
+      options: ["ease", "linear", "ease-out", "cubic-bezier(0.34, 1.56, 0.64, 1)"],
+    },
   },
 } satisfies Meta<typeof Drawer>;
 
@@ -131,6 +137,61 @@ export const NoClickOutside: Story = {
               </Button>
               <Button onClick={() => setOpen(false)}>Save</Button>
             </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </>
+    );
+  },
+};
+
+/**
+ * Both directions animate, including the exit — that needs
+ * `transition-behavior: allow-discrete` and `@starting-style`, which live in
+ * `styles.css`. Watch the close, not just the open.
+ */
+export const Animations: Story = {
+  args: { open: false, children: null },
+  render: () => {
+    const [animation, setAnimation] = useState<"none" | "slide" | "fade" | "scale" | "slide-fade" | null>(null);
+    return (
+      <div className="flex flex-wrap gap-2">
+        {(["slide", "fade", "scale", "slide-fade", "none"] as const).map((value) => (
+          <Button key={value} onClick={() => setAnimation(value)} variant="outline">
+            {value}
+          </Button>
+        ))}
+        <Drawer animation={animation ?? "slide"} onClose={() => setAnimation(null)} open={animation !== null}>
+          <DrawerContent>
+            <DrawerHeader devider>
+              <DrawerTitle>animation="{animation}"</DrawerTitle>
+              <DrawerDescription>Close it and watch the exit.</DrawerDescription>
+            </DrawerHeader>
+            <DrawerBody className="py-4">
+              <p className="text-secondary text-sm">The backdrop fades with the panel.</p>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </div>
+    );
+  },
+};
+
+/** A slow, springy curve, to make the easing obvious. */
+export const SlowAndSpringy: Story = {
+  args: { open: false, children: null },
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open slowly</Button>
+        <Drawer duration={900} ease="cubic-bezier(0.34, 1.56, 0.64, 1)" onClose={() => setOpen(false)} open={open}>
+          <DrawerContent>
+            <DrawerHeader devider>
+              <DrawerTitle>900ms, springy</DrawerTitle>
+            </DrawerHeader>
+            <DrawerBody className="py-4">
+              <p className="text-secondary text-sm">duration and ease are both props.</p>
+            </DrawerBody>
           </DrawerContent>
         </Drawer>
       </>

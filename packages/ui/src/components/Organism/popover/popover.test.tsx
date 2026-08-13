@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Popover } from "./popover";
@@ -110,6 +110,63 @@ describe("Popover", () => {
       await userEvent.click(screen.getByRole("button", { name: "Open" }));
       expect(onOpenChange).toHaveBeenCalledWith(true);
       expect(screen.queryByText("panel content")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("onHover", () => {
+    it("does not open on hover by default", async () => {
+      render(<Popover trigger={trigger}>panel content</Popover>);
+      await userEvent.hover(screen.getByRole("button", { name: "Open" }));
+      expect(screen.queryByText("panel content")).not.toBeInTheDocument();
+    });
+
+    it("opens on pointer enter when set", async () => {
+      render(
+        <Popover onHover trigger={trigger}>
+          panel content
+        </Popover>,
+      );
+      await userEvent.hover(screen.getByRole("button", { name: "Open" }));
+      expect(screen.getByText("panel content")).toBeInTheDocument();
+    });
+
+    it("opens on focus too, so it is reachable without a mouse", async () => {
+      render(
+        <Popover onHover trigger={trigger}>
+          panel content
+        </Popover>,
+      );
+      act(() => screen.getByRole("button", { name: "Open" }).focus());
+      expect(screen.getByText("panel content")).toBeInTheDocument();
+    });
+
+    it("keeps a click from slamming shut what hover just opened", async () => {
+      render(
+        <Popover onHover trigger={trigger}>
+          panel content
+        </Popover>,
+      );
+      await userEvent.click(screen.getByRole("button", { name: "Open" }));
+      expect(screen.getByText("panel content")).toBeInTheDocument();
+    });
+
+    it("waits out the grace period before closing on leave", async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(
+        <Popover hoverCloseDelay={200} onHover trigger={trigger}>
+          panel content
+        </Popover>,
+      );
+
+      await user.hover(screen.getByRole("button", { name: "Open" }));
+      await user.unhover(screen.getByRole("button", { name: "Open" }));
+      // Still open while the pointer crosses the gap to the panel.
+      expect(screen.getByText("panel content")).toBeInTheDocument();
+
+      act(() => vi.advanceTimersByTime(200));
+      expect(screen.queryByText("panel content")).not.toBeInTheDocument();
+      vi.useRealTimers();
     });
   });
 

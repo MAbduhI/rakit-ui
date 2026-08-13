@@ -188,3 +188,61 @@
     transform: translateY(var(--rakit-run-shift, -50%));
   }
 }
+
+/*
+ * Enter/exit animation for the native <dialog> surfaces (Drawer, and Dialog if
+ * it ever wants one).
+ *
+ * A modal <dialog> flips `display` between `none` and `block`, and a discrete
+ * property normally cannot be transitioned — which is why hand-rolled dialog
+ * exits usually need a JS "closing" state. `transition-behavior: allow-discrete`
+ * plus `@starting-style` lets the browser animate both directions on its own.
+ *
+ * The component supplies the closed-state values as custom properties; the open
+ * state is simply the element's defaults.
+ */
+.rakit-anim {
+  transition-property: opacity, translate, scale, display, overlay;
+  transition-duration: var(--rakit-anim-duration, 300ms);
+  transition-timing-function: var(--rakit-anim-ease, ease);
+  transition-behavior: allow-discrete;
+}
+
+.rakit-anim:not([open]) {
+  opacity: var(--rakit-anim-opacity, 1);
+  translate: var(--rakit-anim-translate, none);
+  scale: var(--rakit-anim-scale, 1);
+}
+
+/* The state the element animates *from* on the way in. */
+@starting-style {
+  .rakit-anim[open] {
+    opacity: var(--rakit-anim-opacity, 1);
+    translate: var(--rakit-anim-translate, none);
+    scale: var(--rakit-anim-scale, 1);
+  }
+}
+
+.rakit-anim::backdrop {
+  transition-property: opacity, display, overlay;
+  transition-duration: var(--rakit-anim-duration, 300ms);
+  transition-timing-function: var(--rakit-anim-ease, ease);
+  transition-behavior: allow-discrete;
+}
+
+.rakit-anim:not([open])::backdrop {
+  opacity: 0;
+}
+
+@starting-style {
+  .rakit-anim[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rakit-anim,
+  .rakit-anim::backdrop {
+    transition-duration: 1ms;
+  }
+}

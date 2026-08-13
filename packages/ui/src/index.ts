@@ -86,6 +86,7 @@ export {
 } from "./components/Organism/dialog";
 export {
   Drawer,
+  type DrawerAnimation,
   DrawerBody,
   DrawerContent,
   type DrawerContentProps,
@@ -100,6 +101,15 @@ export {
   DrawerTitle,
 } from "./components/Organism/drawer";
 export { DropdownMenu, type DropdownMenuItem, type DropdownMenuProps } from "./components/Organism/dropdown-menu";
+export {
+  NavMenu,
+  NavMenuContainer,
+  type NavMenuContainerProps,
+  type NavMenuHoverAnimation,
+  type NavMenuOrientation,
+  type NavMenuProps,
+  type NavMenuType,
+} from "./components/Organism/nav-menu";
 export { Popover, type PopoverPlacement, type PopoverProps } from "./components/Organism/popover";
 export {
   Sidebar,

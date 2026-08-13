@@ -1,5 +1,6 @@
 export {
   Drawer,
+  type DrawerAnimation,
   DrawerBody,
   DrawerContent,
   type DrawerContentProps,
