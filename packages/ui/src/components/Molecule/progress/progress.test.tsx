@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Progress } from "./progress";
 
@@ -122,5 +123,72 @@ describe("Progress", () => {
   it.each(["success", "warning", "error"] as const)("paints the %s status", (status) => {
     const { container } = render(<Progress status={status} value={50} />);
     expect(container.querySelector(`.bg-${status}`)).toBeInTheDocument();
+  });
+
+  describe("as a Steps navigator", () => {
+    it("stays a read-out until onStepChange is supplied", () => {
+      render(<Progress steps={4} value={50} variant="stepper" />);
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
+      expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    });
+
+    it("becomes buttons once it is navigable", () => {
+      render(<Progress onStepChange={vi.fn()} steps={4} value={50} variant="stepper" />);
+      expect(screen.getAllByRole("button")).toHaveLength(4);
+      // A list of controls is not a progressbar — that role is for a read-out.
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    });
+
+    it("reports the clicked index", async () => {
+      const onStepChange = vi.fn();
+      render(<Progress labels={["One", "Two", "Three"]} onStepChange={onStepChange} steps={3} value={0} variant="stepper" />);
+
+      await userEvent.click(screen.getByRole("button", { name: /Three/ }));
+      expect(onStepChange).toHaveBeenCalledWith(2);
+    });
+
+    it("marks the active step", () => {
+      render(<Progress labels={["One", "Two", "Three"]} onStepChange={vi.fn()} steps={3} value={34} variant="stepper" />);
+      expect(screen.getByRole("button", { name: /Two/ })).toHaveAttribute("aria-current", "step");
+    });
+
+    it("disables the steps it is told to", async () => {
+      const onStepChange = vi.fn();
+      render(
+        <Progress
+          disabledSteps={[2]}
+          labels={["One", "Two", "Three"]}
+          onStepChange={onStepChange}
+          steps={3}
+          value={0}
+          variant="stepper"
+        />,
+      );
+
+      expect(screen.getByRole("button", { name: /Three/ })).toBeDisabled();
+      await userEvent.click(screen.getByRole("button", { name: /Three/ }));
+      expect(onStepChange).not.toHaveBeenCalled();
+    });
+
+    it("renders descriptions under the labels", () => {
+      render(
+        <Progress
+          descriptions={["Pick items", "Enter address"]}
+          labels={["Cart", "Address"]}
+          steps={2}
+          value={0}
+          variant="stepper"
+        />,
+      );
+      expect(screen.getByText("Pick items")).toBeInTheDocument();
+    });
+
+    it("lets an explicit status override what value implies", () => {
+      const { container } = render(
+        <Progress statuses={["finish", "error", "wait"]} steps={3} value={34} variant="stepper" />,
+      );
+      // Step 2 would be `process` from the value alone; `error` wins.
+      expect(container.querySelector(".bg-error")).toBeInTheDocument();
+    });
   });
 });

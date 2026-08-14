@@ -6,6 +6,8 @@ export type ProgressVariant = "percent" | "dot" | "stepper" | "round";
 export type ProgressStatus = "accent" | "success" | "warning" | "error";
 export type ProgressAnimate = "none" | "fade" | "slide" | "pulse";
 export type ProgressSize = "sm" | "md" | "lg" | "xl";
+/** Per-step state for the `stepper` variant, overriding what `value` implies. */
+export type ProgressStepStatus = "wait" | "process" | "finish" | "error";
 
 const fills: Record<ProgressStatus, string> = {
   accent: "bg-accent",
@@ -36,6 +38,21 @@ export interface ProgressProps extends Omit<HTMLAttributes<HTMLDivElement>, "chi
   steps?: number;
   /** `stepper` only. Falls back to step numbers. */
   labels?: Array<string>;
+  /** `stepper` only — secondary line under each label. */
+  descriptions?: Array<string>;
+  /**
+   * `stepper` only. Overrides the state `value` implies, so a step can be
+   * marked `error` without moving the progress along.
+   */
+  statuses?: Array<ProgressStepStatus>;
+  /**
+   * `stepper` only. Supplying it turns the steps into buttons — the component
+   * becomes a navigator rather than a read-out. Reports the clicked index;
+   * map it back to a `value` yourself, since the caller owns what a step means.
+   */
+  onStepChange?: (index: number) => void;
+  /** `stepper` only — indexes that cannot be clicked even when navigable. */
+  disabledSteps?: Array<number>;
   /** Show the reading. Defaults on for `percent` and `round`. */
   showValue?: boolean;
   /** Replaces the reading, e.g. `(v) => \`${v} of 60\``. */
@@ -58,6 +75,10 @@ export function Progress({
   animate = "slide",
   steps = 5,
   labels,
+  descriptions,
+  statuses,
+  onStepChange,
+  disabledSteps,
   showValue,
   formatValue,
   beforeChange,
@@ -158,34 +179,87 @@ export function Progress({
       );
     }
 
+    /*
+     * With `onStepChange` the markers become buttons and the whole thing is a
+     * navigator, so it stops being a `progressbar` — that role is for a
+     * read-out, and a list of controls announced as one is worse than useless.
+     */
+    const navigable = Boolean(onStepChange);
+
     return (
-      <div className={cn("flex w-full items-center", className)} {...aria} {...props}>
+      <div
+        className={cn("flex w-full items-start", className)}
+        {...(navigable ? { "aria-label": label ?? "Steps" } : aria)}
+        {...props}
+      >
         {Array.from({ length: total }, (_, index) => {
-          const complete = index < done;
-          const current = index === done;
-          return (
-            // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length positional list, never reordered
-            <div key={index} className={cn("flex items-center", index < total - 1 && "flex-1")}>
-              <div className="flex flex-col items-center gap-1">
+          const stepStatus: ProgressStepStatus =
+            statuses?.[index] ?? (index < done ? "finish" : index === done ? "process" : "wait");
+          const complete = stepStatus === "finish";
+          const current = stepStatus === "process";
+          const errored = stepStatus === "error";
+          const disabled = disabledSteps?.includes(index) ?? false;
+
+          const marker = (
+            <span
+              className={cn(
+                "flex size-8 items-center justify-center rounded-full border-2 font-medium text-xs tabular-nums transition-colors motion-reduce:transition-none",
+                errored
+                  ? "border-error bg-error text-error-foreground"
+                  : complete
+                    ? cn(fills[status], "border-transparent text-accent-foreground")
+                    : current
+                      ? "border-accent bg-surface text-accent"
+                      : "border-border bg-surface text-secondary",
+                navigable && !disabled && "group-hover:border-accent",
+              )}
+              style={transition}
+            >
+              {errored ? <Icon name="x" size="sm" /> : complete ? <Icon name="check" size="sm" /> : index + 1}
+            </span>
+          );
+
+          const caption = (
+            <span className="flex flex-col items-center gap-0.5">
+              {labels?.[index] ? (
                 <span
                   className={cn(
-                    "flex size-8 items-center justify-center rounded-full border-2 font-medium text-xs tabular-nums motion-reduce:transition-none",
-                    complete
-                      ? cn(fills[status], "border-transparent text-accent-foreground")
-                      : current
-                        ? "border-accent bg-surface text-accent"
-                        : "border-border bg-surface text-secondary",
+                    "whitespace-nowrap text-xs",
+                    errored ? "text-error" : current ? "font-medium text-primary" : "text-secondary",
                   )}
-                  style={transition}
                 >
-                  {complete ? <Icon name="check" size="sm" /> : index + 1}
+                  {labels[index]}
                 </span>
-                {labels?.[index] ? (
-                  <span className="whitespace-nowrap text-secondary text-xs">{labels[index]}</span>
-                ) : null}
-              </div>
+              ) : null}
+              {descriptions?.[index] ? (
+                <span className="whitespace-nowrap text-[11px] text-secondary">{descriptions[index]}</span>
+              ) : null}
+            </span>
+          );
+
+          return (
+            // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length positional list, never reordered
+            <div key={index} className={cn("flex items-start", index < total - 1 && "flex-1")}>
+              {navigable ? (
+                <button
+                  aria-current={current ? "step" : undefined}
+                  className="group flex flex-col items-center gap-1 rounded-md focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={disabled}
+                  onClick={() => onStepChange?.(index)}
+                  type="button"
+                >
+                  {marker}
+                  {caption}
+                </button>
+              ) : (
+                <div className="flex flex-col items-center gap-1">
+                  {marker}
+                  {caption}
+                </div>
+              )}
+
               {index < total - 1 ? (
-                <div className="mx-2 h-0.5 flex-1 self-start rounded-full bg-border" style={{ marginTop: "0.9375rem" }}>
+                <div className="mx-2 mt-[0.9375rem] h-0.5 flex-1 rounded-full bg-border">
                   <div
                     className={cn("h-full rounded-full motion-reduce:transition-none", fills[status])}
                     style={{ width: complete ? "100%" : "0%", ...transition }}

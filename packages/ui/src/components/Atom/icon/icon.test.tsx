@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Icon } from "./icon";
-import { iconNames } from "./icon-registry";
+import { iconNames, iconRegistry } from "./icon-registry";
 
 describe("Icon", () => {
   it("renders an svg hidden from assistive tech", () => {
@@ -30,11 +30,39 @@ describe("Icon", () => {
     expect(container.querySelector("svg")).toHaveClass("size-5", "text-error");
   });
 
-  it("renders every registered name", () => {
-    for (const name of iconNames) {
+  /*
+   * The registry now covers every Tabler icon, so rendering all of them takes
+   * ~10s and proves little. A spread sample catches a broken lookup; the shape
+   * assertion below catches junk exports leaking in, which is the failure that
+   * actually happened before.
+   */
+  it("renders a sample spread across the registry", () => {
+    const step = Math.floor(iconNames.length / 20);
+    for (let index = 0; index < iconNames.length; index += step) {
+      const name = iconNames[index];
+      if (!name) continue;
       const { container, unmount } = render(<Icon name={name} />);
       expect(container.querySelector("svg")).toBeInTheDocument();
       unmount();
     }
   });
+
+  it("covers the whole Tabler set", () => {
+    expect(iconNames.length).toBeGreaterThan(6000);
+    for (const name of ["map-pin", "check", "chevron-left", "chevrons-right", "menu", "x"]) {
+      expect(iconNames).toContain(name);
+    }
+  });
+
+  it("holds only components — no stray barrel exports", () => {
+    // `createReactComponent`, `icons`, `iconsList` and `default` are exported
+    // alongside the icons; any of them leaking in renders nothing at runtime.
+    for (const junk of ["create-react-component", "icons-list", "default"]) {
+      expect(iconNames).not.toContain(junk);
+    }
+    for (const name of iconNames) {
+      expect(typeof iconRegistry[name]).toBe("object");
+    }
+  });
+
 });

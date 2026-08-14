@@ -11,18 +11,21 @@ GAP ANALYSIS — what Rakit UI doesn't have yet
 Current inventory (from packages/ui/src/index.ts):
   Atom:     Avatar, AvatarGroup, Badge, Button, Card, Checkbox, Divider,
             FlyButton, FlyContainer, Icon, Input, Kbd, Label, Loading,
-            Pagination, Radio, RadioGroup, Select, Skeleton, Switch,
-            Textarea
-  Molecule: Alert, Breadcrumb, Carousel, Collapse, EmptyState, Progress,
-            Result, RunBanner, Tabs, Timeline
-  Organism: Dialog, Drawer, DropdownMenu, NavMenu, Popover, Sidebar,
+            Pagination, Radio, RadioGroup, ScrollArea, Select, Skeleton,
+            Switch, Textarea
+  Molecule: Alert, Breadcrumb, Calendar, Carousel, Collapse, EmptyState,
+            Progress (percent/dot/stepper/round, stepper doubles as a
+            clickable Steps navigator), ResizeContainer, Result, RunBanner,
+            Tabs, Timeline
+  Organism: Dialog, Drawer, DropdownMenu, Menu, NavMenu, Popover, Sidebar,
             Toaster, Maps (subpath: @rakit-ui/ui/maps)
   Utils:    cn, debounce, useTheme
 
 P2 / M2 (the Atom tier) is complete — Label, Textarea, Checkbox, Radio,
 Switch, Select, Avatar and Kbd all shipped, which unblocked the M3 molecules.
-Alert, Breadcrumb, Collapse, EmptyState, Result and Timeline have since
-landed too. What remains below is still missing.
+Alert, Breadcrumb, Collapse, EmptyState, Result and Timeline landed next,
+then Calendar, Menu, ScrollArea, ResizeContainer and Progress's Steps mode.
+What remains below is still missing.
 
 --- Form & Input (highest priority — FormField is the anchor) ---
 - FormField (label + control + error/description wiring in one) (example: https://ant.design/components/form, https://ui.shadcn.com/docs/components/form) — M3_Plan calls this the anchor that sets the error/description conventions every other form molecule inherits, so it should come first
@@ -39,21 +42,16 @@ landed too. What remains below is still missing.
 - Tooltip (example: https://ant.design/components/tooltip, https://ui.shadcn.com/docs/components/tooltip) — Popover exists and now has onHover, but a plain text hint still wants its own smaller component
 - Tag (dismissible, filter-chip style — distinct from Badge) (example: https://ant.design/components/tag, https://flowbite.com/docs/components/badge)
 - Tree / TreeView (example: https://ant.design/components/tree, https://chakra-ui.com/docs/components/tree)
-- Calendar (example: https://ant.design/components/calendar, https://ui.shadcn.com/docs/components/calendar)
 - Stat / Statistic (example: https://ant.design/components/statistic, https://chakra-ui.com/docs/components/stat) — M3_Plan lists this for the Molecule tier
 - Descriptions (key/value detail list) (example: https://ant.design/components/descriptions)
 
 --- Navigation ---
-- Steps (clickable step navigator — different from Progress's `stepper` variant, which is display-only) (example: https://ant.design/components/steps, https://chakra-ui.com/docs/components/steps)
-- Menu (static nav tree/list, as opposed to DropdownMenu's popover-triggered one) (example: https://ant.design/components/menu, https://flowbite.com/docs/components/sidebar)
 - Command palette (⌘K-style fuzzy search + actions) (example: https://ui.shadcn.com/docs/components/command) — Kbd is now available for rendering the shortcut hints
 - Link (token-driven focus and visited states) (example: https://chakra-ui.com/docs/components/link)
 
 --- Layout ---
 - Stack (HStack/VStack — gap-based flex shorthand) (example: https://chakra-ui.com/docs/components/stack, https://ant.design/components/flex)
 - AspectRatio (example: https://chakra-ui.com/docs/components/aspect-ratio, https://ui.shadcn.com/docs/components/aspect-ratio)
-- ScrollArea (styled custom scrollbar) (example: https://ui.shadcn.com/docs/components/scroll-area)
-- Splitter / Resizable panels (example: https://ant.design/components/splitter, https://ui.shadcn.com/docs/components/resizable)
 
 --- Overlay / Feedback ---
 - HoverCard (rich preview on hover, distinct from a plain Tooltip) (example: https://ui.shadcn.com/docs/components/hover-card)
@@ -61,8 +59,6 @@ landed too. What remains below is still missing.
 
 --- Misc utility ---
 - Clipboard / CopyButton (example: https://chakra-ui.com/docs/components/clipboard)
-- Tooltip is the last small overlay still missing — Popover covers the rich
-  case and now has onHover, but a plain text hint wants something lighter
 - QRCode (example: https://ant.design/components/qr-code)
 
 --- Non-component gaps (infrastructure) ---
