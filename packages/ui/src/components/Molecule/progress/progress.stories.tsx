@@ -143,3 +143,75 @@ export const Callbacks: Story = {
     );
   },
 };
+
+/*
+ * Supplying `onStepChange` turns the `stepper` variant into a navigator: the
+ * markers become buttons. It reports the clicked index rather than a value,
+ * because only the caller knows what a step is worth.
+ */
+export const Steps: Story = {
+  render: () => {
+    const labels = ["Cart", "Address", "Payment", "Done"];
+    const [step, setStep] = useState(1);
+    return (
+      <div className="flex w-full flex-col gap-6">
+        <Progress
+          descriptions={["3 items", "Jakarta Pusat", "Card ending 4021", ""]}
+          labels={labels}
+          onStepChange={setStep}
+          steps={labels.length}
+          value={(step / labels.length) * 100}
+          variant="stepper"
+        />
+        <div className="flex gap-2">
+          <Button disabled={step === 0} onClick={() => setStep((current) => current - 1)} size="sm" variant="outline">
+            Back
+          </Button>
+          <Button disabled={step === labels.length - 1} onClick={() => setStep((current) => current + 1)} size="sm">
+            Continue
+          </Button>
+          <code className="self-center text-secondary text-xs">step {step}</code>
+        </div>
+      </div>
+    );
+  },
+};
+
+/** `statuses` overrides what `value` implies — here step 2 failed. */
+export const StepsWithError: Story = {
+  args: {
+    value: 50,
+    variant: "stepper",
+    steps: 4,
+    labels: ["Upload", "Validate", "Import", "Done"],
+    descriptions: ["120 rows", "4 rows rejected", "", ""],
+    statuses: ["finish", "error", "wait", "wait"],
+  },
+};
+
+/** Steps can be individually locked while the rest stay navigable. */
+export const StepsWithDisabled: Story = {
+  render: () => {
+    const [step, setStep] = useState(0);
+    return (
+      <Progress
+        disabledSteps={[2, 3]}
+        labels={["Details", "Review", "Pay", "Receipt"]}
+        onStepChange={setStep}
+        steps={4}
+        value={(step / 4) * 100}
+        variant="stepper"
+      />
+    );
+  },
+};
+
+/** Without `onStepChange` it stays a read-out — no buttons, still a progressbar. */
+export const StepsReadOnly: Story = {
+  args: {
+    value: 50,
+    variant: "stepper",
+    steps: 4,
+    labels: ["Cart", "Address", "Payment", "Done"],
+  },
+};

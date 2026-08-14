@@ -21,6 +21,7 @@
     ]
   },
   "enabledPlugins": {
-    "ponytail@ponytail": true
+    "ponytail@ponytail": true,
+    "claude-mem@thedotmack": true
   }
 }
