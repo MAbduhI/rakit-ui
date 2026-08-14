@@ -51,6 +51,8 @@ export { Select, type SelectOption, type SelectProps } from "./components/Atom/s
 export { Skeleton, type SkeletonProps } from "./components/Atom/skeleton";
 export { Switch, type SwitchProps, type SwitchSize } from "./components/Atom/switch";
 export { Textarea, type TextareaProps } from "./components/Atom/textarea";
+export { Alert, type AlertProps, type AlertVariant } from "./components/Molecule/alert";
+export { Breadcrumb, type BreadcrumbItem, type BreadcrumbProps } from "./components/Molecule/breadcrumb";
 export {
   Carousel,
   type CarouselChevron,
@@ -59,6 +61,13 @@ export {
   type CarouselProps,
 } from "./components/Molecule/carousel";
 export {
+  Collapse,
+  type CollapseIconPosition,
+  type CollapseItem,
+  type CollapseProps,
+} from "./components/Molecule/collapse";
+export { EmptyState, type EmptyStateProps } from "./components/Molecule/empty-state";
+export {
   Progress,
   type ProgressAnimate,
   type ProgressProps,
@@ -66,6 +75,7 @@ export {
   type ProgressStatus,
   type ProgressVariant,
 } from "./components/Molecule/progress";
+export { Result, type ResultProps, type ResultStatus } from "./components/Molecule/result";
 export {
   RunBanner,
   type RunBannerNav,
@@ -85,6 +95,13 @@ export {
   type TabsVariant,
   type TabsWidth,
 } from "./components/Molecule/tabs";
+export {
+  Timeline,
+  type TimelineItem,
+  type TimelineMode,
+  type TimelineProps,
+  type TimelineStatus,
+} from "./components/Molecule/timeline";
 export {
   Dialog,
   DialogBody,
@@ -145,20 +162,27 @@ export {
 // Maps is NOT exported here — it lives at `@rakit-ui/ui/maps` so Leaflet stays
 // out of this bundle. See src/maps.ts.
 export {
+  applyPalette,
   applyTheme,
   getAppliedTheme,
+  getPalette,
   getStoredTheme,
   getSystemTheme,
   initTheme,
   type ResolvedTheme,
   resolveTheme,
+  setPalette,
   setStoredTheme,
   setTheme,
   subscribeToSystemTheme,
   THEME_ATTRIBUTE,
   THEME_STORAGE_KEY,
+  THEME_TOKENS,
+  type ThemePalette,
+  type ThemePaletteOverrides,
   type ThemePreference,
   type ThemeState,
+  type ThemeToken,
   themeScript,
   type UseThemeResult,
   useTheme,

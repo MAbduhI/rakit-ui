@@ -28,6 +28,8 @@
   ],
   "scripts": {
     "build": "tsup && cp src/styles.css dist/styles.css",
+    "icons": "node scripts/generate-icon-names.mjs",
+    "icons:check": "node scripts/generate-icon-names.mjs --check",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",

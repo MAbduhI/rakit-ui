@@ -19,6 +19,44 @@ export type ThemePreference = "light" | "dark" | "system";
 /** What is actually on screen once `"system"` has been resolved. */
 export type ResolvedTheme = "light" | "dark";
 
+/**
+ * Every colour token `styles.css` defines, without the `--color-` prefix.
+ * Typing the palette against this list is what makes `setPalette` autocomplete
+ * and stops a typo silently doing nothing.
+ */
+export const THEME_TOKENS = [
+  "bg",
+  "surface",
+  "surface-alt",
+  "surface-hover",
+  "border",
+  "input",
+  "ring",
+  "overlay",
+  "accent",
+  "accent-foreground",
+  "accent-secondary",
+  "accent-secondary-foreground",
+  "primary",
+  "secondary",
+  "success",
+  "success-foreground",
+  "warning",
+  "warning-foreground",
+  "error",
+  "error-foreground",
+] as const;
+
+export type ThemeToken = (typeof THEME_TOKENS)[number];
+
+/** Any subset of the tokens — anything omitted keeps its stylesheet value. */
+export type ThemePaletteOverrides = Partial<Record<ThemeToken, string>>;
+
+export interface ThemePalette {
+  light?: ThemePaletteOverrides;
+  dark?: ThemePaletteOverrides;
+}
+
 export const THEME_STORAGE_KEY = "rakit-ui-theme";
 export const THEME_ATTRIBUTE = "data-theme";
 
@@ -68,6 +106,55 @@ export function setStoredTheme(preference: ThemePreference): void {
   }
 }
 
+/*
+ * Palette overrides are written as inline custom properties on <html>, which
+ * beats the stylesheet's `:root` rules without touching them. Only the active
+ * theme's half is ever applied, so switching theme swaps the whole set.
+ *
+ * Deliberately not persisted: a palette is application configuration supplied
+ * on every load, not a user preference like light/dark. Persisting it would
+ * also mean the no-flash `themeScript` had to replay it, which it cannot.
+ */
+let palette: ThemePalette = {};
+
+/** Property names currently written, so they can be removed on the next pass. */
+const appliedProperties = new Set<string>();
+
+/** The palette in force. */
+export function getPalette(): ThemePalette {
+  return palette;
+}
+
+/** Re-writes the inline overrides for `resolved`, clearing whatever was there. */
+export function applyPalette(resolved: ResolvedTheme = getAppliedTheme()): void {
+  if (typeof document === "undefined") return;
+
+  const root = document.documentElement;
+  for (const property of appliedProperties) {
+    root.style.removeProperty(property);
+  }
+  appliedProperties.clear();
+
+  const overrides = palette[resolved];
+  if (!overrides) return;
+
+  for (const [token, value] of Object.entries(overrides)) {
+    const property = `--color-${token}`;
+    root.style.setProperty(property, value);
+    appliedProperties.add(property);
+  }
+}
+
+/**
+ * Replaces the palette and applies it immediately. Replaces rather than merges,
+ * so a caller always knows exactly which overrides are live; pass `{}` to drop
+ * back to the stylesheet's own values.
+ */
+export function setPalette(next: ThemePalette): void {
+  palette = next;
+  applyPalette();
+}
+
 /** Collapses a preference down to the theme that should actually render. */
 export function resolveTheme(preference: ThemePreference): ResolvedTheme {
   return preference === "system" ? getSystemTheme() : preference;
@@ -88,6 +175,8 @@ export function applyTheme(preference: ThemePreference): ResolvedTheme {
 
   if (typeof document !== "undefined") {
     document.documentElement.setAttribute(THEME_ATTRIBUTE, resolved);
+    // The overrides are per-theme, so they have to be rewritten on every flip.
+    applyPalette(resolved);
   }
 
   setStoredTheme(preference);

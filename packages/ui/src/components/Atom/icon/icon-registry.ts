@@ -1,89 +1,48 @@
-import {
-  IconAlertTriangle,
-  IconArrowUp,
-  IconBell,
-  IconBrandWhatsapp,
-  IconBuildingWarehouse,
-  IconCalendar,
-  IconCheck,
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronUp,
-  IconClock,
-  IconDownload,
-  IconEdit,
-  IconExternalLink,
-  IconFilter,
-  IconHelp,
-  IconHome,
-  IconInfoCircle,
-  IconMapPin,
-  IconMenu2,
-  IconMessageCircle,
-  IconMinus,
-  IconPhone,
-  IconPlus,
-  IconRefresh,
-  IconSearch,
-  IconSettings,
-  IconStar,
-  IconTrash,
-  IconTruckDelivery,
-  IconUpload,
-  IconUser,
-  IconX,
-} from "@tabler/icons-react";
+import * as TablerIcons from "@tabler/icons-react";
+import type { IconName } from "./icon-name";
 
 /*
- * A curated set, imported statically on purpose.
+ * Every Tabler icon, keyed by kebab name.
  *
- * @tabler/icons-react ships 6185 icons. A namespace import plus a string lookup
- * would defeat tree-shaking and pull all of them into every consumer's bundle,
- * and the package's own `dynamic-imports` map is unusable — it points at
- * `./icons/*.ts` files that are not published (only `.mjs` is). Listing the
- * icons we actually use keeps the bundle honest and makes `name` autocomplete.
+ * The whole set is reachable, and the generated `IconName` union makes a wrong
+ * name a compile error rather than a blank space. The trade is bundle size:
+ * `Object.entries` over the namespace is a dynamic read, so a consumer's
+ * bundler cannot tree-shake the unused icons and ships all ~6250. Our own
+ * `dist` stays small only because the package is an external dependency — the
+ * weight lands in the app, not here.
  *
- * Adding an icon is two lines: the import above, and an entry here.
+ * ponytail: if that weight ever matters, the fix is a build step that rewrites
+ * `<Icon name="x" />` into a direct import, or a curated map behind a second
+ * entry point.
+ *
+ * The barrel also exports `createReactComponent`, `icons`, `iconsList` and
+ * `default`, none of which are components. Filtering on the `Icon` prefix keeps
+ * them out — without it `name="icons"` typechecks and then renders nothing.
  */
-export const iconRegistry = {
-  "alert-triangle": IconAlertTriangle,
-  "arrow-up": IconArrowUp,
-  bell: IconBell,
-  "brand-whatsapp": IconBrandWhatsapp,
-  "building-warehouse": IconBuildingWarehouse,
-  calendar: IconCalendar,
-  check: IconCheck,
-  "chevron-down": IconChevronDown,
-  "chevron-left": IconChevronLeft,
-  "chevron-right": IconChevronRight,
-  "chevron-up": IconChevronUp,
-  clock: IconClock,
-  download: IconDownload,
-  edit: IconEdit,
-  "external-link": IconExternalLink,
-  filter: IconFilter,
-  help: IconHelp,
-  home: IconHome,
-  "info-circle": IconInfoCircle,
-  "map-pin": IconMapPin,
-  menu: IconMenu2,
-  "message-circle": IconMessageCircle,
-  minus: IconMinus,
-  phone: IconPhone,
-  plus: IconPlus,
-  refresh: IconRefresh,
-  search: IconSearch,
-  settings: IconSettings,
-  star: IconStar,
-  trash: IconTrash,
-  "truck-delivery": IconTruckDelivery,
-  upload: IconUpload,
-  user: IconUser,
-  x: IconX,
-} as const;
 
-export type IconName = keyof typeof iconRegistry;
+type TablerIconComponent = (typeof TablerIcons)["IconMapPin"];
+
+/**
+ * `IconMapPin` -> `map-pin`.
+ *
+ * Deliberately identical to the transform in `scripts/generate-icon-names.mjs`,
+ * which builds the `IconName` union from the same export list. `pnpm icons:check`
+ * fails if the two ever disagree.
+ */
+export function toIconName(exportName: string): string {
+  return exportName
+    .replace(/^Icon/, "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
+    .toLowerCase();
+}
+
+export const iconRegistry = Object.fromEntries(
+  Object.entries(TablerIcons)
+    // Icons are `forwardRef` objects, not functions — hence the `object` test.
+    .filter(([key, value]) => key.startsWith("Icon") && typeof value === "object" && value !== null)
+    .map(([key, value]) => [toIconName(key), value]),
+) as Record<IconName, TablerIconComponent>;
 
 /** Every registered name, for stories, showcases, and `<select>` controls. */
 export const iconNames = Object.keys(iconRegistry) as Array<IconName>;

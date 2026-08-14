@@ -1,11 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  applyPalette,
   applyTheme,
+  getPalette,
   getAppliedTheme,
   getStoredTheme,
   getSystemTheme,
   initTheme,
   resolveTheme,
+  setPalette,
   setStoredTheme,
   subscribeToSystemTheme,
   THEME_ATTRIBUTE,
@@ -171,5 +174,69 @@ describe("themeScript", () => {
     eval(themeScript);
 
     expect(document.documentElement.getAttribute(THEME_ATTRIBUTE)).toBe("dark");
+  });
+});
+
+describe("palette", () => {
+  afterEach(() => {
+    setPalette({});
+    document.documentElement.removeAttribute(THEME_ATTRIBUTE);
+  });
+
+  it("starts empty, leaving styles.css in charge", () => {
+    expect(getPalette()).toEqual({});
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("");
+  });
+
+  it("writes only the active theme's overrides", () => {
+    applyTheme("light");
+    setPalette({ light: { accent: "#0f766e" }, dark: { accent: "#5eead4" } });
+
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("#0f766e");
+  });
+
+  it("swaps the whole set when the theme flips", () => {
+    setPalette({ light: { accent: "#0f766e" }, dark: { accent: "#5eead4" } });
+
+    applyTheme("light");
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("#0f766e");
+
+    applyTheme("dark");
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("#5eead4");
+  });
+
+  it("clears overrides the new palette does not define", () => {
+    applyTheme("light");
+    setPalette({ light: { accent: "#0f766e", ring: "#0f766e" } });
+    expect(document.documentElement.style.getPropertyValue("--color-ring")).toBe("#0f766e");
+
+    setPalette({ light: { accent: "#b91c1c" } });
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("#b91c1c");
+    // `ring` is gone rather than stale — setPalette replaces, it does not merge.
+    expect(document.documentElement.style.getPropertyValue("--color-ring")).toBe("");
+  });
+
+  it("drops back to the stylesheet when given an empty palette", () => {
+    applyTheme("light");
+    setPalette({ light: { accent: "#0f766e" } });
+    setPalette({});
+
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("");
+  });
+
+  it("leaves the DOM alone for a theme with no overrides", () => {
+    applyTheme("dark");
+    setPalette({ light: { accent: "#0f766e" } });
+
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("");
+  });
+
+  it("can be re-applied without a theme change", () => {
+    applyTheme("light");
+    setPalette({ light: { surface: "#fafafa" } });
+    document.documentElement.style.removeProperty("--color-surface");
+
+    applyPalette("light");
+    expect(document.documentElement.style.getPropertyValue("--color-surface")).toBe("#fafafa");
   });
 });

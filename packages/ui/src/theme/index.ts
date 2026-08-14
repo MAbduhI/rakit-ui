@@ -1,6 +1,8 @@
 export {
+  applyPalette,
   applyTheme,
   getAppliedTheme,
+  getPalette,
   getStoredTheme,
   getSystemTheme,
   initTheme,
@@ -10,7 +12,11 @@ export {
   subscribeToSystemTheme,
   THEME_ATTRIBUTE,
   THEME_STORAGE_KEY,
+  THEME_TOKENS,
+  type ThemePalette,
+  type ThemePaletteOverrides,
   type ThemePreference,
+  type ThemeToken,
   themeScript,
 } from "./theme";
-export { setTheme, type ThemeState, type UseThemeResult, useTheme } from "./use-theme";
+export { setPalette, setTheme, type ThemeState, type UseThemeResult, useTheme } from "./use-theme";

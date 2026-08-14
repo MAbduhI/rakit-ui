@@ -1,7 +1,8 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type { SVGAttributes } from "react";
 import { cn } from "../../../utils";
-import { type IconName, iconRegistry } from "./icon-registry";
+import type { IconName } from "./icon-name";
+import { iconRegistry } from "./icon-registry";
 
 /*
  * Sizes are CSS width/height, not the underlying `size` attribute — a class

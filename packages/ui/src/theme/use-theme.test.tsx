@@ -125,3 +125,44 @@ describe("useTheme", () => {
     expect(result.current.resolvedTheme).toBe("light");
   });
 });
+
+describe("useTheme palette", () => {
+  it("starts empty", () => {
+    const { result } = renderHook(() => useTheme());
+    expect(result.current.palette).toEqual({});
+  });
+
+  it("applies overrides and reports them back", () => {
+    const { result } = renderHook(() => useTheme());
+
+    act(() => {
+      result.current.setTheme("light");
+      result.current.setPalette({ light: { accent: "#0f766e" }, dark: { accent: "#5eead4" } });
+    });
+
+    expect(result.current.palette.light?.accent).toBe("#0f766e");
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("#0f766e");
+  });
+
+  it("swaps overrides when the theme is toggled", () => {
+    const { result } = renderHook(() => useTheme());
+
+    act(() => {
+      result.current.setTheme("light");
+      result.current.setPalette({ light: { accent: "#0f766e" }, dark: { accent: "#5eead4" } });
+    });
+    act(() => result.current.toggleTheme());
+
+    expect(result.current.resolvedTheme).toBe("dark");
+    expect(document.documentElement.style.getPropertyValue("--color-accent")).toBe("#5eead4");
+  });
+
+  it("shares the palette across every caller", () => {
+    const first = renderHook(() => useTheme());
+    const second = renderHook(() => useTheme());
+
+    act(() => first.result.current.setPalette({ light: { surface: "#fafafa" } }));
+
+    expect(second.result.current.palette.light?.surface).toBe("#fafafa");
+  });
+});
