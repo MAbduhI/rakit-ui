@@ -43,7 +43,7 @@ What remains below is still missing.
 - Tag (dismissible, filter-chip style — distinct from Badge) (example: https://ant.design/components/tag, https://flowbite.com/docs/components/badge)
 - Tree / TreeView (example: https://ant.design/components/tree, https://chakra-ui.com/docs/components/tree)
 - Stat / Statistic (example: https://ant.design/components/statistic, https://chakra-ui.com/docs/components/stat) — M3_Plan lists this for the Molecule tier
-- Descriptions (key/value detail list) (example: https://ant.design/components/descriptions)
+- Descriptions (key/value detail liaria-orientationst) (example: https://ant.design/components/descriptions)
 
 --- Navigation ---
 - Command palette (⌘K-style fuzzy search + actions) (example: https://ui.shadcn.com/docs/components/command) — Kbd is now available for rendering the shortcut hints
@@ -68,6 +68,11 @@ What remains below is still missing.
 - The -highlight Badge variants (and therefore the matching Toaster variants) pin bg-white, so they stay white cards in dark mode. Fixing it properly means the `-subtle` token set from M3_Plan; it would fix both components at once since they share badge-tones.ts.
 - CardHeader/CardFooter's `devider` prop uses border-b-black / border-t-black — hardcoded palette, invisible on a dark surface. Should be border-border.
 - `devider` is also misspelled in public API (Card, Dialog, Drawer) while the component is spelled `Divider`. Renaming is breaking, so it is cheaper to decide now than after 1.0.
+
+--- Form (Input) ---
+-- auto suggestion 
+-- TextEditor example: (https://tiptap.dev, https://ckeditor.com, https://quilljs.com )
+-- TreeDiagram example: (https://github.com/Kibo007/node-tree-generator-d3)
 
 
 ===============================================================

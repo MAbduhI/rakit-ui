@@ -202,6 +202,7 @@ export function Progress({
 
           const marker = (
             <span
+              //Note: Refactor cn class
               className={cn(
                 "flex size-8 items-center justify-center rounded-full border-2 font-medium text-xs tabular-nums transition-colors motion-reduce:transition-none",
                 errored
@@ -259,7 +260,7 @@ export function Progress({
               )}
 
               {index < total - 1 ? (
-                <div className="mx-2 mt-[0.9375rem] h-0.5 flex-1 rounded-full bg-border">
+                <div className="mx-2 mt-3.75 h-0.5 flex-1 rounded-full bg-border">
                   <div
                     className={cn("h-full rounded-full motion-reduce:transition-none", fills[status])}
                     style={{ width: complete ? "100%" : "0%", ...transition }}
