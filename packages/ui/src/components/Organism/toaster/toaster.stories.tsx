@@ -155,7 +155,7 @@ function FancyDemo() {
             </div>
             <button
               aria-label="Dismiss"
-              className="-mr-1 -mt-1 shrink-0 rounded p-1 text-secondary hover:bg-surface-alt hover:text-primary"
+              className="-mt-1 -mr-1 shrink-0 rounded p-1 text-secondary hover:bg-surface-alt hover:text-primary"
               onClick={close}
               type="button"
             >

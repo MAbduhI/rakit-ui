@@ -38,7 +38,7 @@ export function Select({
       {leftIcon ? (
         <Icon
           className={cn(
-            "-translate-y-1/2 pointer-events-none absolute top-1/2 left-3 text-secondary",
+            "pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-secondary",
             props.disabled && "opacity-50",
           )}
           name={leftIcon}
@@ -69,7 +69,7 @@ export function Select({
       </select>
       <Icon
         className={cn(
-          "-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 text-secondary",
+          "pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-secondary",
           props.disabled && "opacity-50",
         )}
         name="chevron-down"
