@@ -1,6 +1,6 @@
-# Rakit UI
+# Rakitmimpi UI
 
-React component library built on [Tailwind CSS v4](https://tailwindcss.com), published as `@rakit-ui/ui`.
+React component library built on [Tailwind CSS v4](https://tailwindcss.com), published as `@rakitmimpi-ui/ui`.
 
 Monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces) and [Turborepo](https://turborepo.dev), linted with [Biome](https://biomejs.dev), tested with [Vitest](https://vitest.dev), documented with [Storybook](https://storybook.js.org), and guarded by [Lefthook](https://lefthook.dev) git hooks.
 
@@ -18,7 +18,7 @@ Monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces) and [Turbore
 │           ├── showcase.tsx       # every component × every variant
 │           └── styles.css
 ├── packages/
-│   └── ui/                        # @rakit-ui/ui — the component library
+│   └── ui/                        # @rakitmimpi-ui/ui — the component library
 │       ├── docs/                  # Storybook MDX pages (Introduction, Theming)
 │       ├── src/
 │       │   ├── components/
@@ -50,7 +50,7 @@ pnpm playground       # run only the playground, skipping the library watch buil
 pnpm build            # build all packages via turbo
 pnpm storybook        # run Storybook at http://localhost:6006
 pnpm test             # run the Vitest suite once
-pnpm --filter @rakit-ui/ui test:watch   # Vitest in watch mode
+pnpm --filter @rakitmimpi-ui/ui test:watch   # Vitest in watch mode
 pnpm check            # biome lint + format check
 pnpm check:fix        # auto-fix lint/format issues
 pnpm typecheck        # TypeScript type checking
@@ -66,7 +66,7 @@ Tests are colocated with the code they cover (`button.test.tsx` next to `button.
 pnpm dev          # http://localhost:5173
 ```
 
-Edit anything under `packages/ui/src` and the page hot-reloads immediately — the playground aliases `@rakit-ui/ui` to the library **source** rather than `dist`, so there is no build step in the loop.
+Edit anything under `packages/ui/src` and the page hot-reloads immediately — the playground aliases `@rakitmimpi-ui/ui` to the library **source** rather than `dist`, so there is no build step in the loop.
 
 Three files matter:
 
@@ -84,12 +84,12 @@ Both stay useful. Storybook is the documentation surface — autodocs, arg contr
 
 Two files have to agree, and both are commented:
 
-- [vite.config.ts](apps/playground/vite.config.ts) — `resolve.alias` maps `@rakit-ui/ui` → `packages/ui/src/index.ts` for the bundler.
+- [vite.config.ts](apps/playground/vite.config.ts) — `resolve.alias` maps `@rakitmimpi-ui/ui` → `packages/ui/src/index.ts` for the bundler.
 - [tsconfig.json](apps/playground/tsconfig.json) — the matching `paths` entry so `tsc` resolves it the same way.
 
 [src/styles.css](apps/playground/src/styles.css) imports the tokens from source and adds `@source "../../../packages/ui/src"` so Tailwind scans the library's files. Without that `@source` line the app renders unstyled components — Tailwind would never see classes like `bg-primary`, because they live outside this app's own directory.
 
-The playground is `private: true` and never published. `@rakit-ui/ui` is still declared as a `workspace:*` dependency so Turborepo knows the build order.
+The playground is `private: true` and never published. `@rakitmimpi-ui/ui` is still declared as a `workspace:*` dependency so Turborepo knows the build order.
 
 ## Component organization & Storybook grouping
 
@@ -156,14 +156,14 @@ Tier order in the sidebar is pinned in [.storybook/preview.ts](packages/ui/.stor
 
 Import components through their folder barrel (`./components/Atom/button`), never the `.tsx` file directly. Cross-tier imports go through the barrel too — a molecule pulls in `../../Atom/button`.
 
-## Using `@rakit-ui/ui` in your project
+## Using `@rakitmimpi-ui/ui` in your project
 
 ### 1. Install
 
 Once published to npm:
 
 ```bash
-pnpm add @rakit-ui/ui
+pnpm add @rakitmimpi-ui/ui
 ```
 
 Or straight from git while unpublished (the `prepack` script builds it on install):
@@ -184,8 +184,8 @@ The library ships Tailwind utility classes in its source and design tokens in `s
 
 ```css
 @import "tailwindcss";
-@import "@rakit-ui/ui/styles.css";
-@source "../node_modules/@rakit-ui/ui/dist";
+@import "@rakitmimpi-ui/ui/styles.css";
+@source "../node_modules/@rakitmimpi-ui/ui/dist";
 ```
 
 > Adjust the `@source` path so it is relative to the CSS file. Tailwind does not scan `node_modules` by default, so this line is required for the component classes to be generated.
@@ -201,7 +201,7 @@ import {
   CardHeader,
   CardTitle,
   Input,
-} from "@rakit-ui/ui";
+} from "@rakitmimpi-ui/ui";
 
 export function Example() {
   return (
@@ -249,7 +249,7 @@ Run `pnpm storybook` and open http://localhost:6006. Every component has an auto
 
 ```bash
 pnpm build
-pnpm --filter @rakit-ui/ui publish
+pnpm --filter @rakitmimpi-ui/ui publish
 ```
 
 ## License

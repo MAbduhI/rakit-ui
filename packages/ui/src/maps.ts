@@ -1,5 +1,5 @@
 /**
- * `@rakit-ui/ui/maps` — a separate entry point on purpose.
+ * `@rakitmimpi-ui/ui/maps` — a separate entry point on purpose.
  *
  * Maps pulls in Leaflet (~150 KB) plus `react-dom/server` for marker markup.
  * In ESM that code-splits away, but a CJS build cannot split, so shipping this

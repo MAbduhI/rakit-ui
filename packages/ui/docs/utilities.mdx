@@ -7,7 +7,7 @@ import { Meta } from "@storybook/addon-docs/blocks";
 Helpers that ship alongside the components, exported from the package root.
 
 ```tsx
-import { cn, debounce } from "@rakit-ui/ui";
+import { cn, debounce } from "@rakitmimpi-ui/ui";
 ```
 
 ## `cn`
@@ -36,7 +36,7 @@ recent arguments are used, and nothing fires on the first call — the trailing
 edge only, which is what a search field or an autosave wants.
 
 ```tsx
-import { debounce } from "@rakit-ui/ui";
+import { debounce } from "@rakitmimpi-ui/ui";
 
 const search = debounce((term: string) => fetchResults(term), 300);
 
@@ -62,7 +62,7 @@ cleanup cancels the pending call so it cannot fire after unmount:
 
 ```tsx
 import { useEffect, useMemo, useState } from "react";
-import { debounce, Input } from "@rakit-ui/ui";
+import { debounce, Input } from "@rakitmimpi-ui/ui";
 
 export function SearchOrders({
   onSearch,

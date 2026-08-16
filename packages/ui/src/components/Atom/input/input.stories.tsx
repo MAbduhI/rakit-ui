@@ -41,7 +41,7 @@ export const Disabled: Story = {
 
 export const WithValue: Story = {
   args: {
-    defaultValue: "hello@rakit-ui.dev",
+    defaultValue: "hello@rakitmimpi-ui.dev",
     type: "email",
   },
 };

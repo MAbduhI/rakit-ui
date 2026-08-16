@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `@rakit-ui/ui` are documented here. The format follows
+All notable changes to `@rakitmimpi-ui/ui` are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). While pre-1.0, breaking
 changes bump the **minor** and everything else the **patch**.
 
@@ -23,7 +23,7 @@ Initial public release.
   redefining a token on `:root[data-theme="dark"]` themes both modes.
 - `Icon` — every `@tabler/icons-react` icon reachable by name (`IconName` union
   generated from the Tabler export list).
-- `Maps` on a separate `@rakit-ui/ui/maps` entry point (keeps Leaflet out of the
+- `Maps` on a separate `@rakitmimpi-ui/ui/maps` entry point (keeps Leaflet out of the
   root bundle): markers, polylines/routes, custom marker icons, built-in OSM and
   Google tile layers, and a `customLayers` prop plus `addTileLayer` /
   `removeTileLayer` / `setCustomLayers` for registering tile sources by URL.

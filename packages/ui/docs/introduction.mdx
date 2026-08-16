@@ -2,28 +2,28 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 <Meta title="Docs/Introduction" />
 
-# Rakit UI
+# Rakitmimpi UI
 
-A React component library built on Tailwind CSS v4, published as `@rakit-ui/ui`.
+A React component library built on Tailwind CSS v4, published as `@rakitmimpi-ui/ui`.
 
 ## Install
 
 ```bash
-pnpm add @rakit-ui/ui
+pnpm add @rakitmimpi-ui/ui
 ```
 
 ## Wire up Tailwind
 
 ```css
 @import "tailwindcss";
-@import "@rakit-ui/ui/styles.css";
-@source "../node_modules/@rakit-ui/ui/dist";
+@import "@rakitmimpi-ui/ui/styles.css";
+@source "../node_modules/@rakitmimpi-ui/ui/dist";
 ```
 
 ## Use a component
 
 ```tsx
-import { Button } from "@rakit-ui/ui";
+import { Button } from "@rakitmimpi-ui/ui";
 
 export function Example() {
   return <Button variant="primary">Get started</Button>;
@@ -37,7 +37,7 @@ Both themes ship in `styles.css`. Dark mode turns on when `<html>` carries
 stored. The `useTheme()` hook handles both:
 
 ```tsx
-import { useTheme } from "@rakit-ui/ui";
+import { useTheme } from "@rakitmimpi-ui/ui";
 
 const { resolvedTheme, toggleTheme } = useTheme();
 ```

@@ -1,6 +1,6 @@
-# Rakit UI monorepo
+# Rakitmimpi UI monorepo
 
-React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspace + Turborepo.
+React component library (`@rakitmimpi-ui/ui`) built on Tailwind CSS v4. pnpm workspace + Turborepo.
 
 ## Layout
 
@@ -11,7 +11,7 @@ React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspac
 - `src/styles.css` — Tailwind v4 `@theme` design tokens plus the dark-theme overrides.
 - `docs/*.mdx` — standalone Storybook doc pages (Introduction, Theming) not tied to a component; registered via the `../docs/**/*.mdx` entry in `.storybook/main.ts`'s `stories` glob.
 - Storybook config is inside the package at `packages/ui/.storybook/` (react-vite framework, Tailwind wired via `@tailwindcss/vite` in `viteFinal`).
-- `apps/playground` — private Vite + React app for hacking on components in a real browser (`pnpm dev` → port 5173). `src/scratch.tsx` is a disposable scratch space; `src/showcase.tsx` renders every component × variant; `src/app.tsx` is the shell plus a `Section` helper. It aliases `@rakit-ui/ui` to the library **source** (`resolve.alias` in `vite.config.ts` + a matching `paths` entry in `tsconfig.json` — keep both in sync), and `src/styles.css` adds `@source "../../../packages/ui/src"` so Tailwind scans the library's classes. Not published.
+- `apps/playground` — private Vite + React app for hacking on components in a real browser (`pnpm dev` → port 5173). `src/scratch.tsx` is a disposable scratch space; `src/showcase.tsx` renders every component × variant; `src/app.tsx` is the shell plus a `Section` helper. It aliases `@rakitmimpi-ui/ui` to the library **source** (`resolve.alias` in `vite.config.ts` + a matching `paths` entry in `tsconfig.json` — keep both in sync), and `src/styles.css` adds `@source "../../../packages/ui/src"` so Tailwind scans the library's classes. Not published.
 - `.claude/settings.json` at repo root — project-local Claude Code permission allowlist for common pnpm/git commands.
 
 ## Commands (run from repo root)
@@ -19,10 +19,10 @@ React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspac
 - `pnpm dev` — turbo `dev`: runs the playground on port 5173 and tsup's watch build of the library. `pnpm playground` runs only the playground.
 - `pnpm build` — turbo build of all packages (ui builds with tsup: ESM + CJS + d.ts, then copies `styles.css` to `dist/`)
 - `pnpm storybook` — Storybook dev server on port 6006
-- `pnpm test` — turbo run of the Vitest suite (single run); `pnpm --filter @rakit-ui/ui test:watch` for watch mode
+- `pnpm test` — turbo run of the Vitest suite (single run); `pnpm --filter @rakitmimpi-ui/ui test:watch` for watch mode
 - `pnpm check` / `pnpm check:fix` — Biome lint + format (`check:full` runs the stricter `biome.full.jsonc`)
 - `pnpm typecheck` — `tsc --noEmit` per package
-- Single package: `pnpm --filter @rakit-ui/ui <script>`
+- Single package: `pnpm --filter @rakitmimpi-ui/ui <script>`
 
 ## Conventions (enforced by Biome — see biome.jsonc)
 
@@ -40,7 +40,7 @@ React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspac
 - Components carry **no `dark:` classes**. Dark mode redefines the same custom properties on `:root[data-theme="dark"]`, so a token-only component themes itself. If you reach for `dark:`, the token is missing.
 - Status meaning goes through `success` / `warning` / `error` (each with a matching `-foreground` for text on the fill); brand goes through `accent` / `accent-secondary`.
 - Adding a token means adding it in three places: the `@theme` block, the `:root[data-theme="dark"]` block, and the `prefers-color-scheme` mirror of that block. Then document it in `docs/theming.mdx` with its measured contrast.
-- **`IconName` is generated.** `src/components/Atom/icon/icon-name.ts` is written by `scripts/generate-icon-names.mjs` — never edit it by hand. `iconRegistry` builds its keys at runtime from the same `@tabler/icons-react` export list using the same `Icon<Pascal>` → `kebab` transform, so the union and the runtime keys stay in step; `pnpm --filter @rakit-ui/ui icons:check` fails if they drift. Re-run `pnpm --filter @rakit-ui/ui icons` after upgrading Tabler. Every Tabler icon (~6250) is reachable by name; the cost is that a consumer's bundler cannot tree-shake them, since the registry reads the namespace dynamically.
+- **`IconName` is generated.** `src/components/Atom/icon/icon-name.ts` is written by `scripts/generate-icon-names.mjs` — never edit it by hand. `iconRegistry` builds its keys at runtime from the same `@tabler/icons-react` export list using the same `Icon<Pascal>` → `kebab` transform, so the union and the runtime keys stay in step; `pnpm --filter @rakitmimpi-ui/ui icons:check` fails if they drift. Re-run `pnpm --filter @rakitmimpi-ui/ui icons` after upgrading Tabler. Every Tabler icon (~6250) is reachable by name; the cost is that a consumer's bundler cannot tree-shake them, since the registry reads the namespace dynamically.
 - New component checklist: pick a tier, create `src/components/<Tier>/<name>/<name>.tsx` + `<name>.stories.tsx` + `<name>.test.tsx` + `index.ts` barrel, set the story `title` to `Components/<Tier>/<Name>`, export from `src/index.ts`, then add a `<Section>` for it in `apps/playground/src/showcase.tsx`.
 
 ## Storybook grouping
@@ -61,4 +61,4 @@ React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspac
 - Git hooks: Lefthook (`lefthook.yml`) runs Biome on staged JS/TS and Prettier on md/css at pre-commit. Installed by the root `prepare` script.
 - Default git branch is `development` (Biome's VCS integration expects this).
 - `react`/`react-dom` are peer dependencies of the ui package — keep them out of `dependencies`.
-- Consumers must add `@source "../node_modules/@rakit-ui/ui/dist"` to their Tailwind CSS entry; the package ships uncompiled utility classes.
+- Consumers must add `@source "../node_modules/@rakitmimpi-ui/ui/dist"` to their Tailwind CSS entry; the package ships uncompiled utility classes.

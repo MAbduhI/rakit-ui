@@ -1,11 +1,11 @@
 /*
- * Rakit UI design tokens (Tailwind CSS v4).
+ * Rakitmimpi UI design tokens (Tailwind CSS v4).
  *
  * Consumers import this file alongside Tailwind:
  *
  *   @import "tailwindcss";
- *   @import "@rakit-ui/ui/styles.css";
- *   @source "../node_modules/@rakit-ui/ui/dist";
+ *   @import "@rakitmimpi-ui/ui/styles.css";
+ *   @source "../node_modules/@rakitmimpi-ui/ui/dist";
  *
  * Two themes ship here. Light is the default and lives in `@theme`; dark
  * overrides the same custom properties, so every Tailwind utility that reads a

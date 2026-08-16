@@ -88,7 +88,7 @@ export const Swatch = ({ token, light, dark, usage }) => (
 
 # Theming
 
-Rakit UI ships two themes. Every color is a Tailwind v4 theme variable defined in
+Rakitmimpi UI ships two themes. Every color is a Tailwind v4 theme variable defined in
 `src/styles.css`; dark mode redefines the same variables, so components carry no
 `dark:` classes — utilities like `bg-surface` and `text-secondary` just
 resolve differently.
@@ -112,7 +112,7 @@ Dark applies when either is true:
 `data-theme` is the only contract. Set it however you like, or use the hook.
 
 ```tsx
-import { useTheme } from "@rakit-ui/ui";
+import { useTheme } from "@rakitmimpi-ui/ui";
 
 function ThemeToggle() {
   const { resolvedTheme, toggleTheme } = useTheme();
@@ -132,7 +132,7 @@ stays in sync. It returns:
 | ----------------- | ------------------------------- | ------------------------------------------------- |
 | `theme`           | `"light" \| "dark" \| "system"` | what the user picked                              |
 | `resolvedTheme`   | `"light" \| "dark"`             | what is on screen                                 |
-| `setTheme(theme)` |                                 | persists to `localStorage` under `rakit-ui-theme` |
+| `setTheme(theme)` |                                 | persists to `localStorage` under `rakitmimpi-ui-theme` |
 | `toggleTheme()`   |                                 | flips light ↔ dark as an explicit choice          |
 
 The default is `"system"`, which follows `prefers-color-scheme` and keeps
@@ -145,7 +145,7 @@ React applies the theme after hydration, which is one paint too late. Drop the
 exported `themeScript` into `<head>` as a blocking script:
 
 ```tsx
-import { themeScript } from "@rakit-ui/ui";
+import { themeScript } from "@rakitmimpi-ui/ui";
 
 // biome-ignore lint/security/noDangerouslySetInnerHtml: must run before paint
 <script dangerouslySetInnerHTML={{ __html: themeScript }} />;
@@ -416,8 +416,8 @@ stylesheet. Override both themes or you will only fix one:
 
 ```css
 @import "tailwindcss";
-@import "@rakit-ui/ui/styles.css";
-@source "../node_modules/@rakit-ui/ui/dist";
+@import "@rakitmimpi-ui/ui/styles.css";
+@source "../node_modules/@rakitmimpi-ui/ui/dist";
 
 @theme {
   --color-accent: #1f6f4a; /* light */

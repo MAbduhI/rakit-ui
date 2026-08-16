@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rakit UI Playground</title>
+    <title>Rakitmimpi UI Playground</title>
     <!--
-      Mirror of `themeScript` from @rakit-ui/ui. Blocking and before paint, so a
+      Mirror of `themeScript` from @rakitmimpi-ui/ui. Blocking and before paint, so a
       dark-themed reload never flashes light. Apps get this by inlining the
       exported `themeScript` string instead of hand-copying it.
     -->
     <script>
       (function () {
         try {
-          var s = localStorage.getItem("rakit-ui-theme");
+          var s = localStorage.getItem("rakitmimpi-ui-theme");
           var t =
             s === "light" || s === "dark"
               ? s

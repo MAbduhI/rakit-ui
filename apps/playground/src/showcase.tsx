@@ -36,8 +36,8 @@ import {
   type TabsProps,
   ToasterProvider,
   useToaster,
-} from "@rakit-ui/ui";
-import { type CustomTileLayer, Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
+} from "@rakitmimpi-ui/ui";
+import { type CustomTileLayer, Maps, type MarkerInput, type PolylineInput } from "@rakitmimpi-ui/ui/maps";
 import { useState } from "react";
 import { Section } from "./section";
 

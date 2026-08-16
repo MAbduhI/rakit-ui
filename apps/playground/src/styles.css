@@ -2,7 +2,7 @@
 
 /*
  * The library's design tokens. Imported straight from source rather than
- * `@rakit-ui/ui/styles.css` so token edits show up without a rebuild.
+ * `@rakitmimpi-ui/ui/styles.css` so token edits show up without a rebuild.
  */
 @import "../../../packages/ui/src/styles.css";
 

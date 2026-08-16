@@ -1,6 +1,6 @@
-# Rakit UI — Phases
+# Rakitmimpi UI — Phases
 
-The build-out plan for `@rakit-ui/ui`, from design tokens to a 1.0 release.
+The build-out plan for `@rakitmimpi-ui/ui`, from design tokens to a 1.0 release.
 
 Phases run in order and follow the atomic-design tiers, because each tier is genuinely built out of the one below it: a `FormField` molecule needs `Label` and `Input` to exist first, and a `DashboardShell` template needs a `Navbar` organism. Skipping ahead means building the lower tier twice.
 
@@ -99,7 +99,7 @@ Everything between "the components exist" and "someone else can depend on them."
 - **Automated a11y.** `@storybook/addon-a11y` plus axe assertions in Vitest. Nothing checks accessibility automatically today.
 - **CI.** No workflow exists yet — `check:full`, `typecheck`, `test`, `build` on every PR, plus a published Storybook build.
 - **Changelog + releases.** `CHANGELOG.md`, git tags, and a release checklist (see the `release` skill). Consider Changesets once contributors exceed one.
-- **Consumer docs.** A real install → configure → use path, leading with the `@source "../node_modules/@rakit-ui/ui/dist"` directive that is required and easy to miss.
+- **Consumer docs.** A real install → configure → use path, leading with the `@source "../node_modules/@rakitmimpi-ui/ui/dist"` directive that is required and easy to miss.
 - **Framework verification.** Vite, Next.js App Router (RSC boundaries — components using `useTheme` need `"use client"`), and Remix.
 - **Bundle budget.** Per-entry size tracking and verified tree-shaking.
 

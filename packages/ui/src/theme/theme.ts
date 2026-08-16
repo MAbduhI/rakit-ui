@@ -57,7 +57,7 @@ export interface ThemePalette {
   dark?: ThemePaletteOverrides;
 }
 
-export const THEME_STORAGE_KEY = "rakit-ui-theme";
+export const THEME_STORAGE_KEY = "rakitmimpi-ui-theme";
 export const THEME_ATTRIBUTE = "data-theme";
 
 const DARK_QUERY = "(prefers-color-scheme: dark)";

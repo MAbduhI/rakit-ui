@@ -1,4 +1,4 @@
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input } from "@rakit-ui/ui";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input } from "@rakitmimpi-ui/ui";
 import { useState } from "react";
 import { Section } from "./section";
 

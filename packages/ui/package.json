@@ -1,7 +1,7 @@
 {
-  "name": "@rakit-ui/ui",
+  "name": "@rakitmimpi-ui/ui",
   "version": "0.1.0",
-  "description": "Rakit UI — React component library built on Tailwind CSS",
+  "description": "Rakitmimpi UI — React component library built on Tailwind CSS",
   "license": "MIT",
   "author": "Abduh Ichsan <abduhikhsan1@gmail.com>",
   "homepage": "https://github.com/MAbduhI/rakit-ui#readme",

@@ -85,11 +85,11 @@ Dispatch it with the **Task tool**, `general-purpose` subagent, and a brief carr
 1. the component folder that changed (e.g. `packages/ui/src/components/Organism/maps/`),
 2. what changed — new/renamed props, new variants, changed defaults or behavior,
 3. the two targets: `<name>.stories.tsx` (a story per new capability) and the component's `<Section>` in `apps/playground/src/showcase.tsx`,
-4. _"Follow the conventions in CLAUDE.md,"_ then run `pnpm --filter @rakit-ui/ui typecheck` and report what changed and anything it could not update.
+4. _"Follow the conventions in CLAUDE.md,"_ then run `pnpm --filter @rakitmimpi-ui/ui typecheck` and report what changed and anything it could not update.
 
 Concrete call:
 
-> **Task**(`subagent_type: "general-purpose"`): "The `Maps` component gained a `customLayers` prop (`Array<{ id; name; url; options? }>`) plus `addTileLayer` / `removeTileLayer` / `setCustomLayers` methods. Add a story exercising `customLayers` to `packages/ui/src/components/Organism/maps/maps.stories.tsx`, and update the Maps `<Section>` in `apps/playground/src/showcase.tsx` to match. Follow the conventions in CLAUDE.md. Run `pnpm --filter @rakit-ui/ui typecheck`, then report the diff and any gaps."
+> **Task**(`subagent_type: "general-purpose"`): "The `Maps` component gained a `customLayers` prop (`Array<{ id; name; url; options? }>`) plus `addTileLayer` / `removeTileLayer` / `setCustomLayers` methods. Add a story exercising `customLayers` to `packages/ui/src/components/Organism/maps/maps.stories.tsx`, and update the Maps `<Section>` in `apps/playground/src/showcase.tsx` to match. Follow the conventions in CLAUDE.md. Run `pnpm --filter @rakitmimpi-ui/ui typecheck`, then report the diff and any gaps."
 
 The rule holds even when the original change was made inline: an inline fix still ends with this dispatch. It does **not** apply to work that is already delegated — an implementer building a new component owns its own stories as one of its four files (see the dispatch contract above).
 

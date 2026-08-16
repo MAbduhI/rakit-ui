@@ -15,8 +15,8 @@
     "types": ["vite/client", "node"],
     "baseUrl": ".",
     "paths": {
-      "@rakit-ui/ui": ["../../packages/ui/src/index.ts"],
-      "@rakit-ui/ui/maps": ["../../packages/ui/src/maps.ts"]
+      "@rakitmimpi-ui/ui": ["../../packages/ui/src/index.ts"],
+      "@rakitmimpi-ui/ui/maps": ["../../packages/ui/src/maps.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

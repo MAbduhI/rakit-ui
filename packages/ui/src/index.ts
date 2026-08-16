@@ -184,7 +184,7 @@ export {
   type ToastVariant,
   useToaster,
 } from "./components/Organism/toaster";
-// Maps is NOT exported here — it lives at `@rakit-ui/ui/maps` so Leaflet stays
+// Maps is NOT exported here — it lives at `@rakitmimpi-ui/ui/maps` so Leaflet stays
 // out of this bundle. See src/maps.ts.
 export {
   applyPalette,

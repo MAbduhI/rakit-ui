@@ -1,5 +1,5 @@
 {
-  "name": "@rakit-ui/playground",
+  "name": "@rakitmimpi-ui/playground",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "lint": "biome check ."
   },
   "dependencies": {
-    "@rakit-ui/ui": "workspace:*",
+    "@rakitmimpi-ui/ui": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

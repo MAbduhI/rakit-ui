@@ -25,7 +25,7 @@ importers:
 
   apps/playground:
     dependencies:
-      '@rakit-ui/ui':
+      '@rakitmimpi-ui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       react:
