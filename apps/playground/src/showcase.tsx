@@ -37,7 +37,7 @@ import {
   ToasterProvider,
   useToaster,
 } from "@rakit-ui/ui";
-import { Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
+import { type CustomTileLayer, Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
 import { useState } from "react";
 import { Section } from "./app";
 
@@ -90,6 +90,21 @@ const mapMarkers: Array<MarkerInput> = [
 const mapRoutes: Array<PolylineInput> = [
   { id: "run-1", coordinates: [[-6.2088, 106.8456] as [number, number], [-6.1751, 106.8272] as [number, number]] },
   { id: "run-2", coordinates: [[-6.2088, 106.8456] as [number, number], [-6.2297, 106.8295] as [number, number]] },
+];
+
+const mapCustomLayers: Array<CustomTileLayer> = [
+  {
+    id: "opentopo",
+    name: "OpenTopoMap",
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    options: { attribution: "&copy; OpenStreetMap contributors, SRTM | &copy; OpenTopoMap (CC-BY-SA)" },
+  },
+  {
+    id: "carto-dark",
+    name: "Carto Dark",
+    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    options: { attribution: "&copy; OpenStreetMap contributors &copy; CARTO", subdomains: "abcd" },
+  },
 ];
 
 const carouselSlides = (["bg-accent", "bg-accent-secondary", "bg-success", "bg-warning"] as const).map(
@@ -440,6 +455,20 @@ export function Showcase() {
           center={[-6.2088, 106.8456]}
           markers={mapMarkers}
           routes={mapRoutes}
+          zoom={12}
+        />
+      </Section>
+
+      <Section
+        title="Maps — custom tile layers"
+        description="customLayers registers extra tile sources in the layer switcher; tileLayer opens on one of their ids."
+      >
+        <Maps
+          className="h-96 w-full overflow-hidden rounded-md border border-border"
+          center={[-6.2088, 106.8456]}
+          customLayers={mapCustomLayers}
+          markers={mapMarkers}
+          tileLayer="carto-dark"
           zoom={12}
         />
       </Section>

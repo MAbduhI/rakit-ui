@@ -74,6 +74,27 @@ Point at the skill rather than restating it: _"Follow the `new-component` skill.
 
 ---
 
+## Updating an existing component
+
+Changing a component's props, variants, or behavior is **not done** until its Storybook stories and its playground showcase section reflect the change. Do not leave that as an inline afterthought — once the implementation is settled, **dispatch one sub-agent** to bring both up to date, so the docs and the live library never drift from the code.
+
+One agent, not a fan-out: a single component change touches one `*.stories.tsx` (private to the component) and one `<Section>` in the shared `showcase.tsx`. Because it is a single agent there is no parallel-edit contention, so this is the one case where the showcase edit is safe to delegate rather than reserve for the orchestrator.
+
+Dispatch it with the **Task tool**, `general-purpose` subagent, and a brief carrying:
+
+1. the component folder that changed (e.g. `packages/ui/src/components/Organism/maps/`),
+2. what changed — new/renamed props, new variants, changed defaults or behavior,
+3. the two targets: `<name>.stories.tsx` (a story per new capability) and the component's `<Section>` in `apps/playground/src/showcase.tsx`,
+4. _"Follow the conventions in CLAUDE.md,"_ then run `pnpm --filter @rakit-ui/ui typecheck` and report what changed and anything it could not update.
+
+Concrete call:
+
+> **Task**(`subagent_type: "general-purpose"`): "The `Maps` component gained a `customLayers` prop (`Array<{ id; name; url; options? }>`) plus `addTileLayer` / `removeTileLayer` / `setCustomLayers` methods. Add a story exercising `customLayers` to `packages/ui/src/components/Organism/maps/maps.stories.tsx`, and update the Maps `<Section>` in `apps/playground/src/showcase.tsx` to match. Follow the conventions in CLAUDE.md. Run `pnpm --filter @rakit-ui/ui typecheck`, then report the diff and any gaps."
+
+The rule holds even when the original change was made inline: an inline fix still ends with this dispatch. It does **not** apply to work that is already delegated — an implementer building a new component owns its own stories as one of its four files (see the dispatch contract above).
+
+---
+
 ## Sequencing
 
 Dependencies come from the tiers, and the milestone plans encode them:

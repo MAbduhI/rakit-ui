@@ -8,6 +8,7 @@
  * Consumers add `leaflet` themselves; it is an optional peer dependency here.
  */
 export {
+  type CustomTileLayer,
   MapContainer,
   type MapEvent,
   Maps,

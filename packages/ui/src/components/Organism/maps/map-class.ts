@@ -4,7 +4,30 @@ import * as L from "leaflet";
 import { googleMapsLoader } from "./google-maps-loader";
 import { resolveMarkerIcon } from "./marker-icon";
 
-type TileLayer = "osm" | "google-roadmap" | "google-satellite" | "google-hybrid" | "google-terrain";
+type BuiltInTileLayer = "osm" | "google-roadmap" | "google-satellite" | "google-hybrid" | "google-terrain";
+
+/**
+ * A built-in tile source or a custom layer id supplied via `customLayers`.
+ * The `& {}` keeps editor autocomplete for the built-ins while still accepting
+ * arbitrary custom ids.
+ */
+type TileLayer = BuiltInTileLayer | (string & {});
+
+/**
+ * A consumer-supplied tile source. Registered as a selectable base layer, so it
+ * shows up in the layer switcher and can be activated by passing its `id` to
+ * the `tileLayer` prop / `switchTileLayer`.
+ */
+interface CustomTileLayer {
+  /** Stable id — activate with `tileLayer` / `switchTileLayer`; reported by `getCurrentTileLayer`. */
+  id: string;
+  /** Human label shown in the layer-control switcher. */
+  name: string;
+  /** Leaflet URL template, e.g. `https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png`. */
+  url: string;
+  /** Forwarded to `L.tileLayer` — `attribution`, `maxZoom`, `subdomains`, etc. */
+  options?: L.TileLayerOptions;
+}
 
 /**
  * Creates a Leaflet DivIcon from an IconType using CSS-based icons
@@ -159,6 +182,8 @@ interface MapClassOptions {
   showLayerControl?: boolean;
   googleMapsApiKey?: string;
   attributionControl?: boolean;
+  /** Extra tile sources shown alongside the built-in ones in the layer switcher. */
+  customLayers?: Array<CustomTileLayer>;
   [key: string]: unknown; // For additional Leaflet map options
 }
 
@@ -177,6 +202,11 @@ interface MapClassType {
   isGoogleMapsReady: () => boolean;
   isGoogleMutantReady: () => boolean;
   getAvailableLayers: () => Array<TileLayer>;
+
+  // Custom tile layers
+  addTileLayer: (layer: CustomTileLayer) => void;
+  removeTileLayer: (id: string) => boolean;
+  setCustomLayers: (layers: Array<CustomTileLayer>) => void;
 
   // View / positioning
   setCenter: (coordinates: L.LatLngExpression, zoom?: number) => void;
@@ -310,7 +340,19 @@ interface MarkerInput {
 type LatLngExpression = L.LatLng | L.LatLngLiteral | L.LatLngTuple;
 
 class MapClass extends L.Map {
-  private baseLayers: Record<TileLayer, L.Layer | null> = {
+  private static readonly builtInLabels: Record<BuiltInTileLayer, string> = {
+    osm: "OpenStreetMap",
+    "google-roadmap": "Google Roadmap",
+    "google-satellite": "Google Satellite",
+    "google-hybrid": "Google Hybrid",
+    "google-terrain": "Google Terrain",
+  };
+
+  private static isBuiltIn(id: string): boolean {
+    return id in MapClass.builtInLabels;
+  }
+
+  private baseLayers: Record<string, L.Layer | null> = {
     osm: null,
     "google-roadmap": null,
     "google-satellite": null,
@@ -325,9 +367,20 @@ class MapClass extends L.Map {
   private polylines: Map<string, PolylineData> = new Map();
   private markers: Map<string, MarkerData> = new Map();
   private userInteracting = false;
+  private customLayers: Array<CustomTileLayer> = [];
+  private showLayerControl = true;
+  private layersControl?: L.Control.Layers;
 
   constructor(id: string | HTMLElement, options: MapClassOptions) {
-    const { tileLayer = "osm", showLayerControl = true, googleMapsApiKey, center, zoom, ...mapOptions } = options;
+    const {
+      tileLayer = "osm",
+      showLayerControl = true,
+      googleMapsApiKey,
+      customLayers = [],
+      center,
+      zoom,
+      ...mapOptions
+    } = options;
 
     // Call parent constructor
     super(id, { center, zoom, ...mapOptions });
@@ -335,17 +388,19 @@ class MapClass extends L.Map {
     this.L = L;
     this.currentTileLayer = tileLayer;
     this.googleMapsApiKey = googleMapsApiKey;
+    this.customLayers = customLayers;
+    this.showLayerControl = showLayerControl;
 
     // Initialize layers after construction with a small delay to ensure DOM is ready
-    setTimeout(() => this.initializeLayers(showLayerControl), 0);
+    setTimeout(() => this.initializeLayers(), 0);
   }
 
-  private async initializeLayers(showLayerControl: boolean) {
+  private async initializeLayers() {
     try {
       // Check if map is ready
       if (!this.getContainer()) {
         // Retry after container is ready
-        setTimeout(() => this.initializeLayers(showLayerControl), 100);
+        setTimeout(() => this.initializeLayers(), 100);
         return;
       }
 
@@ -357,13 +412,25 @@ class MapClass extends L.Map {
         await this.loadGoogleMapsIntegration();
       }
 
+      // Register any consumer-supplied tile sources
+      this.createCustomLayers();
+
       // Add initial layer
       this.addInitialLayer();
 
+      // Keep `currentTileLayer` in step when the user switches via the control.
+      // Registered once here rather than in `renderLayerControl`, which re-runs
+      // whenever the custom layers change.
+      super.on("baselayerchange", (e: L.LayersControlEvent) => {
+        const labels = this.getLayerLabels();
+        const layerId = Object.entries(labels).find(([, label]) => label === e.name)?.[0];
+        if (layerId) {
+          this.currentTileLayer = layerId;
+        }
+      });
+
       // Add layer control if enabled
-      if (showLayerControl) {
-        this.addLayerControl();
-      }
+      this.renderLayerControl();
     } catch {
       // Failed to initialize layers - fallback to OSM if Google Maps fails
       this.addInitialLayer();
@@ -437,33 +504,52 @@ class MapClass extends L.Map {
     }
   }
 
-  private addLayerControl() {
-    const layerLabels: Record<TileLayer, string> = {
-      osm: "OpenStreetMap",
-      "google-roadmap": "Google Roadmap",
-      "google-satellite": "Google Satellite",
-      "google-hybrid": "Google Hybrid",
-      "google-terrain": "Google Terrain",
-    };
+  /** Built-in labels merged with the current custom-layer names, keyed by id. */
+  private getLayerLabels(): Record<string, string> {
+    const labels: Record<string, string> = { ...MapClass.builtInLabels };
+    for (const { id, name } of this.customLayers) {
+      labels[id] = name;
+    }
+    return labels;
+  }
 
+  /** Build a Leaflet tile layer for each consumer-supplied source. */
+  private createCustomLayers() {
+    for (const { id, url, options } of this.customLayers) {
+      try {
+        this.baseLayers[id] = this.L.tileLayer(url, options);
+      } catch {
+        // A bad URL or option set must not take the rest of the layers down.
+        this.baseLayers[id] = null;
+      }
+    }
+  }
+
+  /**
+   * (Re)build the layer switcher from the current set of base layers. Safe to
+   * call repeatedly — it tears the previous control down first, so adding or
+   * removing a layer at runtime stays in sync.
+   */
+  private renderLayerControl() {
+    if (this.layersControl) {
+      this.removeControl(this.layersControl);
+      this.layersControl = undefined;
+    }
+    if (!this.showLayerControl) {
+      return;
+    }
+
+    const labels = this.getLayerLabels();
     const layersForControl: Record<string, L.Layer> = {};
     Object.entries(this.baseLayers).forEach(([key, layer]) => {
       if (layer) {
-        layersForControl[layerLabels[key as TileLayer]] = layer;
+        layersForControl[labels[key] ?? key] = layer;
       }
     });
 
     // Only add layer control if we have more than one layer
     if (Object.keys(layersForControl).length > 1) {
-      this.L.control.layers(layersForControl).addTo(this);
-
-      // Handle layer changes
-      super.on("baselayerchange", (e: L.LayersControlEvent) => {
-        const layerName = Object.entries(layerLabels).find(([, label]) => label === e.name)?.[0] as TileLayer;
-        if (layerName) {
-          this.currentTileLayer = layerName;
-        }
-      });
+      this.layersControl = this.L.control.layers(layersForControl).addTo(this);
     }
   }
 
@@ -752,6 +838,90 @@ class MapClass extends L.Map {
     return Object.entries(this.baseLayers)
       .filter(([, layer]) => layer !== null)
       .map(([key]) => key as TileLayer);
+  }
+
+  /**
+   * Register a custom tile source at runtime. Replaces any existing layer with
+   * the same id. Activate it with `switchTileLayer(layer.id)` or the
+   * `tileLayer` prop.
+   */
+  public addTileLayer(layer: CustomTileLayer): void {
+    let tile: L.TileLayer;
+    try {
+      tile = this.L.tileLayer(layer.url, layer.options);
+    } catch {
+      // Invalid URL/options — leave the existing layers untouched.
+      return;
+    }
+
+    const existing = this.baseLayers[layer.id];
+    if (existing && this.hasLayer(existing)) {
+      this.removeLayer(existing);
+    }
+
+    this.customLayers = [...this.customLayers.filter((l) => l.id !== layer.id), layer];
+    this.baseLayers[layer.id] = tile;
+    this.renderLayerControl();
+  }
+
+  /**
+   * Remove a previously added custom tile source. Built-in layers cannot be
+   * removed. Falls back to OSM when the removed layer was the active one.
+   */
+  public removeTileLayer(id: string): boolean {
+    if (MapClass.isBuiltIn(id)) {
+      return false;
+    }
+    const layer = this.baseLayers[id];
+    if (!layer) {
+      return false;
+    }
+
+    if (this.hasLayer(layer)) {
+      this.removeLayer(layer);
+    }
+    delete this.baseLayers[id];
+    this.customLayers = this.customLayers.filter((l) => l.id !== id);
+
+    if (this.currentTileLayer === id) {
+      this.currentTileLayer = "osm";
+      const osm = this.baseLayers.osm;
+      if (osm && !this.hasLayer(osm)) {
+        osm.addTo(this);
+      }
+    }
+
+    this.renderLayerControl();
+    return true;
+  }
+
+  /**
+   * Replace the full set of custom tile sources — the reconciliation entry
+   * point behind the `customLayers` prop. Built-in layers are left untouched.
+   */
+  public setCustomLayers(layers: Array<CustomTileLayer>): void {
+    // Tear down the previous custom layers
+    for (const { id } of this.customLayers) {
+      const existing = this.baseLayers[id];
+      if (existing && this.hasLayer(existing)) {
+        this.removeLayer(existing);
+      }
+      delete this.baseLayers[id];
+    }
+
+    this.customLayers = layers;
+    this.createCustomLayers();
+
+    // The active layer may have been a custom one that no longer exists.
+    if (!this.baseLayers[this.currentTileLayer]) {
+      this.currentTileLayer = "osm";
+    }
+    const active = this.baseLayers[this.currentTileLayer];
+    if (active && !this.hasLayer(active)) {
+      active.addTo(this);
+    }
+
+    this.renderLayerControl();
   }
 
   /**
@@ -1528,6 +1698,7 @@ export type {
   CustomIconOptions,
   CustomLegendOptions,
   CustomPopupOptions,
+  CustomTileLayer,
   LatLngExpression,
   MapClassOptions,
   MapClassType,

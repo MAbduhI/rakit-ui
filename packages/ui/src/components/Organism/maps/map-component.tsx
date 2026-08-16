@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "../../../utils";
 import { Loading } from "../../Atom/loading";
 // Type-only imports to avoid SSR issues
-import type { CustomIconOptions, MapClassOptions, MapClassType, TileLayer } from "./map-class";
+import type { CustomIconOptions, CustomTileLayer, MapClassOptions, MapClassType, TileLayer } from "./map-class";
 import type { MapContainerProps, MapContainerPropsInternal, MapEvent } from "./map-component.types";
 
 const MapContainer: React.FC<MapContainerPropsInternal> = ({
@@ -17,6 +17,7 @@ const MapContainer: React.FC<MapContainerPropsInternal> = ({
   tileLayer = "osm",
   showLayerControl = true,
   googleMapsApiKey = "",
+  customLayers = [],
   className,
   style,
   routes = [],
@@ -63,6 +64,7 @@ const MapContainer: React.FC<MapContainerPropsInternal> = ({
         tileLayer: currentLayer,
         showLayerControl: showLayerControl as boolean,
         googleMapsApiKey: googleMapsApiKey as string,
+        customLayers: customLayers as Array<CustomTileLayer>,
         attributionControl: true,
         ...mapOptions,
       }) as MapClassType;
@@ -152,6 +154,12 @@ const MapContainer: React.FC<MapContainerPropsInternal> = ({
       mapInstance.current.switchTileLayer(currentLayer);
     }
   }, [currentLayer, isReady]);
+
+  useEffect(() => {
+    if (mapInstance.current && isReady) {
+      mapInstance.current.setCustomLayers(customLayers as Array<CustomTileLayer>);
+    }
+  }, [customLayers, isReady]);
 
   useEffect(() => {
     if (mapInstance.current && isReady && routes) {

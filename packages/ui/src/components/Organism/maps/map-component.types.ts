@@ -1,5 +1,5 @@
 import type React from "react";
-import type { MapClassOptions, MapClassType, MarkerInput, RoutesInput } from "./map-class";
+import type { CustomTileLayer, MapClassOptions, MapClassType, MarkerInput, RoutesInput } from "./map-class";
 
 export interface MapContainerPropsInternal extends Omit<MapClassOptions, "center" | "zoom"> {
   center?: [number, number];
@@ -26,7 +26,7 @@ export interface MapContainerPropsInternal extends Omit<MapClassOptions, "center
 
 export interface MapContainerProps extends MapContainerPropsInternal {}
 
-export type { MarkerInput, RoutesInput as PolylineInput };
+export type { CustomTileLayer, MarkerInput, RoutesInput as PolylineInput };
 
 interface MapBounds {
   north: number;

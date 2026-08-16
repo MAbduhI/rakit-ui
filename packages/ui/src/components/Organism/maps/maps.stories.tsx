@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import Maps from "./map-component";
-import type { MarkerInput, PolylineInput } from "./map-component.types";
+import type { CustomTileLayer, MarkerInput, PolylineInput } from "./map-component.types";
 
 const meta = {
   title: "Components/Organism/Maps",
@@ -17,7 +17,15 @@ const meta = {
   argTypes: {
     tileLayer: {
       control: "select",
-      options: ["osm", "google-roadmap", "google-satellite", "google-hybrid", "google-terrain"],
+      options: [
+        "osm",
+        "google-roadmap",
+        "google-satellite",
+        "google-hybrid",
+        "google-terrain",
+        "opentopo",
+        "carto-dark",
+      ],
     },
     zoom: {
       control: { type: "range", min: 3, max: 18, step: 1 },
@@ -143,4 +151,35 @@ export const VehicleTracking: Story = {
 /** No layer switcher — for embeds where the tile source is fixed. */
 export const WithoutLayerControl: Story = {
   args: { markers, showLayerControl: false },
+};
+
+/*
+ * Extra tile sources supplied by URL. They join the built-in OSM in the layer
+ * switcher, and `tileLayer` can point at any custom id to open on it.
+ */
+const customLayers: Array<CustomTileLayer> = [
+  {
+    id: "opentopo",
+    name: "OpenTopoMap",
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    options: {
+      maxZoom: 17,
+      attribution: "&copy; OpenStreetMap contributors, SRTM — &copy; OpenTopoMap (CC-BY-SA)",
+    },
+  },
+  {
+    id: "carto-dark",
+    name: "Carto Dark Matter",
+    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    options: {
+      subdomains: "abcd",
+      maxZoom: 20,
+      attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+    },
+  },
+];
+
+/** Custom tile sources passed by URL, opening on the dark Carto basemap. */
+export const CustomLayers: Story = {
+  args: { markers, customLayers, tileLayer: "carto-dark" },
 };

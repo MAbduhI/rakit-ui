@@ -48,6 +48,7 @@ React component library (`@rakit-ui/ui`) built on Tailwind CSS v4. pnpm workspac
 - The sidebar tree is built from each story's `meta.title` string, **not** from the folder path — the `stories` glob in `.storybook/main.ts` only decides which files load. Moving a component to a different folder does nothing until its `title` is updated.
 - Convention: `title` mirrors the path under `src/components/`, e.g. `src/components/Atom/button/` → `title: "Components/Atom/Button"`. Standalone MDX pages use `<Meta title="Docs/…" />`.
 - Tier order is pinned in `.storybook/preview.ts` under `parameters.options.storySort.order`; add new tiers there or they sort alphabetically.
+- After changing a component's props or behavior, dispatch a sub-agent to update that component's `*.stories.tsx` and its `apps/playground/src/showcase.tsx` section to cover the change — see `AGENT.md` → "Updating an existing component" for the exact dispatch.
 
 ## Testing
 
