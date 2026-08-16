@@ -29,7 +29,7 @@ class GoogleMapsLoader {
    * Load Google Maps API if not already loaded
    */
   public async load(options: GoogleMapsLoaderOptions): Promise<void> {
-    if (this.isLoaded && window.google && window.google.maps) {
+    if (this.isLoaded && window.google?.maps) {
       return Promise.resolve();
     }
 

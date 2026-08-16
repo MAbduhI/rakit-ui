@@ -137,7 +137,7 @@ function ToastCard({ toast, onClose }: ToastCardProps) {
       </div>
       <button
         aria-label="Close notification"
-        className="-mr-1 -mt-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-current focus-visible:outline-offset-2"
+        className="-mt-1 -mr-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-current focus-visible:outline-offset-2"
         onClick={onClose}
         type="button"
       >

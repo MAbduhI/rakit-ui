@@ -177,7 +177,7 @@ export function ResizeContainer({
                 aria-hidden
                 className={cn(
                   "absolute",
-                  isHorizontal ? "-inset-x-1.5 inset-y-0" : "-inset-y-1.5 inset-x-0",
+                  isHorizontal ? "-inset-x-1.5 inset-y-0" : "inset-x-0 -inset-y-1.5",
                   disabled ? "cursor-default" : isHorizontal ? "cursor-col-resize" : "cursor-row-resize",
                 )}
               />
