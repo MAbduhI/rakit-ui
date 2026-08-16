@@ -3,6 +3,28 @@
   "version": "1.0.0",
   "description": "Rakit UI — React component library built on Tailwind CSS",
   "license": "MIT",
+  "author": "Abduh Ichsan <abduhikhsan1@gmail.com>",
+  "homepage": "https://github.com/MAbduhI/rakit-ui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MAbduhI/rakit-ui.git",
+    "directory": "packages/ui"
+  },
+  "bugs": {
+    "url": "https://github.com/MAbduhI/rakit-ui/issues"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "tailwind",
+    "tailwindcss",
+    "design-system",
+    "component-library"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -24,7 +46,8 @@
     "./styles.css": "./dist/styles.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.map"
   ],
   "scripts": {
     "build": "tsup && cp src/styles.css dist/styles.css",
