@@ -39,7 +39,7 @@ import {
 } from "@rakit-ui/ui";
 import { type CustomTileLayer, Maps, type MarkerInput, type PolylineInput } from "@rakit-ui/ui/maps";
 import { useState } from "react";
-import { Section } from "./app";
+import { Section } from "./section";
 
 const buttonVariants: Array<NonNullable<ButtonProps["variant"]>> = [
   "primary",

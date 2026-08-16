@@ -1,12 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
   "extends": ["./biome.jsonc"],
   "linter": {
     "rules": {
       "correctness": {
         "noUndeclaredDependencies": "error"
       },
-      "nursery": {
+      "suspicious": {
         "noImportCycles": "error"
       }
     }
@@ -26,7 +26,7 @@
           "correctness": {
             "noUndeclaredDependencies": "off"
           },
-          "nursery": {
+          "suspicious": {
             "noImportCycles": "off"
           }
         }
