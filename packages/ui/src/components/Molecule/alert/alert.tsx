@@ -93,7 +93,7 @@ export function Alert({
       {closable ? (
         <button
           aria-label="Dismiss"
-          className="-mr-1 -mt-1 shrink-0 self-start rounded p-1 text-secondary transition-colors hover:bg-surface-alt hover:text-primary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+          className="-mt-1 -mr-1 shrink-0 self-start rounded p-1 text-secondary transition-colors hover:bg-surface-alt hover:text-primary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
           onClick={onClose}
           type="button"
         >

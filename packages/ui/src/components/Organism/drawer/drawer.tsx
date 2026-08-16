@@ -191,7 +191,7 @@ export function DrawerHeader({ className, devider = false, showClose = true, chi
       {showClose ? (
         <button
           aria-label="Close"
-          className="-mr-1 -mt-1 shrink-0 rounded-md p-1 text-secondary transition-colors hover:bg-surface-alt hover:text-primary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+          className="-mt-1 -mr-1 shrink-0 rounded-md p-1 text-secondary transition-colors hover:bg-surface-alt hover:text-primary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
           onClick={() => context?.close()}
           type="button"
         >
